@@ -1,0 +1,37 @@
+{
+  "id": "northeastern",
+  "name": "Northeastern",
+  "version": 1,
+  "default": true,
+  "about": "Northeastern University's colours on the layout of the course lecture decks: white slides, a red rule, black title and statement slides, red section dividers, Lato throughout.",
+  "sources": [
+    "https://brand.northeastern.edu/design-and-experiences/design/color/ (colour values, read 2026-11-10)",
+    "The INFO 7375 and CSYE 7270 lecture decks (slide patterns and type sizes)"
+  ],
+  "fonts": {
+    "google": "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap",
+    "local": [
+      {"family": "Lato", "weight": 400, "style": "normal", "file": "Lato-Regular.ttf"},
+      {"family": "Lato", "weight": 700, "style": "normal", "file": "Lato-Bold.ttf"},
+      {"family": "JetBrains Mono", "weight": 400, "style": "normal", "file": "JetBrainsMono-Regular.ttf"},
+      {"family": "JetBrains Mono", "weight": 700, "style": "normal", "file": "JetBrainsMono-Bold.ttf"}
+    ],
+    "note": "Northeastern's brand face is FF Real Head Pro, which is licensed. Lato is the free stand-in the Brand Center names."
+  },
+  "logos": {
+    "mark": "logos/monogram-red.svg",
+    "mark-on-dark": "logos/monogram-white.svg",
+    "lockup": "logos/primary-logo-red-black.svg",
+    "lockup-on-dark": "logos/primary-logo-red-white.svg"
+  },
+  "rules": [
+    "Red is brand and emphasis only. It never means bad, wrong or warning by itself: a label carries that meaning.",
+    "Every deck has red in it, but never a sea of red: section dividers are the only full-red slides.",
+    "No gradients, drop shadows, glows or photo filters. Square corners, thin rules.",
+    "Headings are regular weight and sentence case. Bold is for emphasis inside a line.",
+    "Charts: red for the series the claim is about, greys for everything else. No categorical rainbow. Red is never paired with green as good and bad.",
+    "On black slides red is decoration only (it is 3.6:1 on black). Emphasis text on black is white.",
+    "Gold (#A4804A) is ceremonial and not in this style. Do not add it.",
+    "Logos: only Northeastern's official files, never redrawn or recoloured, on the title and closing slides only, with clear space equal to the height of the N. Using the marks needs the right to use them: Northeastern staff, faculty and students doing university work."
+  ]
+}

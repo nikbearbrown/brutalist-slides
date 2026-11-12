@@ -1,0 +1,230 @@
+/* brutalist-slides engine 0.1.0
+   Structure, layouts and viewer chrome. No brand colours and no typefaces live here:
+   every colour and face is a --bs-* token set by the style block that follows this one.
+   Canvas: a fixed 1920 x 1080 stage, scaled to fit the window. All sizes are stage pixels. */
+
+:root{
+  /* floors the audit enforces; a style may raise them, never lower them for a projected deck */
+  --bs-floor-body:40;      /* px. Kosslyn's 20 pt on a 7.5 in slide = 3.7% of height */
+  --bs-floor-label:32;     /* px. chart, diagram and source labels: never smaller */
+  --bs-min-contrast:4.5;   /* WCAG AA for normal text, used for ALL projected text */
+  --bs-ease:cubic-bezier(0.4,0,0.2,1);
+  /* viewer chrome (follows the system theme; slides keep their own fixed colours) */
+  --chrome-stage:#E9E9E9; --chrome-bg:rgba(255,255,255,0.95); --chrome-fg:#1A1A1A;
+  --chrome-line:#C4C4C4; --chrome-muted:#545454; --chrome-hover:rgba(0,0,0,0.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{--chrome-stage:#141414; --chrome-bg:rgba(26,26,26,0.95); --chrome-fg:#F2F2F2;
+        --chrome-line:#404040; --chrome-muted:#909090; --chrome-hover:rgba(255,255,255,0.09)}
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%}
+body{
+  height:100%; margin:0; overflow:hidden; display:flex; flex-direction:column;
+  background:var(--chrome-stage); color:var(--chrome-fg);
+  font-family:var(--bs-font-body, system-ui, sans-serif);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+:fullscreen body, body:fullscreen{background:#000}
+.sr-only{position:absolute; left:0; top:0; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------- stage ---------- */
+#stage{position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action:pan-y}
+#deck{position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0}
+
+/* ---------- slide base ---------- */
+.slide{
+  /* the working set. Layout CSS and builds use these six, never the brand tokens directly */
+  --ground:var(--bs-ground); --surface:var(--bs-surface); --ink:var(--bs-ink);
+  --soft:var(--bs-ink-soft); --hair:var(--bs-rule); --accent:var(--bs-accent);
+  --deco:var(--bs-accent-deco, var(--bs-accent)); --tint:var(--bs-accent-tint);
+  position:absolute; inset:0; display:none; flex-direction:column; overflow:hidden;
+  padding:84px 120px 64px;
+  background:var(--ground); color:var(--ink);
+  font-family:var(--bs-font-body); font-size:var(--bs-body-size, 40px); line-height:1.35;
+}
+.slide[data-tone="dark"]{
+  --ground:var(--bs-dark-ground); --surface:var(--bs-dark-surface); --ink:var(--bs-dark-ink);
+  --soft:var(--bs-dark-ink-soft); --hair:var(--bs-dark-rule); --accent:var(--bs-dark-accent);
+  --deco:var(--bs-dark-accent-deco, var(--bs-dark-accent)); --tint:var(--bs-dark-surface);
+}
+.slide[data-tone="accent"]{
+  --ground:var(--bs-accent-ground); --surface:var(--bs-accent-ground); --ink:var(--bs-on-accent);
+  --soft:var(--bs-on-accent); --hair:var(--bs-on-accent); --accent:var(--bs-on-accent);
+  --deco:var(--bs-on-accent); --tint:var(--bs-accent-ground);
+}
+.slide.is-active{display:flex}
+:where(.slide) :where(h1,h2,h3,p,ul,ol,figure,blockquote){margin:0}
+.slide .notes{display:none}
+
+/* ---------- type roles ---------- */
+.eyebrow{
+  font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); font-weight:700;
+  line-height:1.2; letter-spacing:var(--bs-eyebrow-tracking, 0.12em);
+  text-transform:var(--bs-eyebrow-case, uppercase); color:var(--accent); margin-bottom:22px;
+}
+.claim{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-claim-size, 64px); line-height:1.15; letter-spacing:-0.01em;
+  max-width:1680px; text-wrap:balance; color:var(--ink);
+}
+.title{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-title-size, 104px); line-height:1.02; letter-spacing:-0.02em;
+  max-width:1560px; text-wrap:balance;
+}
+.subtitle{font-size:44px; line-height:1.3; color:var(--soft); max-width:1400px; text-wrap:pretty}
+.statement{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-statement-size, 80px); line-height:1.12; letter-spacing:-0.015em;
+  max-width:1560px; text-wrap:balance;
+}
+.label{font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); line-height:1.3; color:var(--soft)}
+.source{font-size:var(--bs-label-size, 32px); line-height:1.3; color:var(--soft); margin-top:auto; padding-top:18px}
+.num{font-family:var(--bs-font-mono); font-variant-numeric:tabular-nums}
+.accent{color:var(--accent)}
+.context{color:var(--soft)}
+strong{font-weight:700}
+
+/* status of what is shown: observed, computed, illustrative, conceptual */
+.status{
+  position:absolute; right:120px; top:84px; font-family:var(--bs-font-label);
+  font-size:var(--bs-label-size, 32px); line-height:1.2; color:var(--soft);
+}
+
+/* ---------- layouts ---------- */
+/* title and closing: one per deck each */
+.slide[data-layout="title"], .slide[data-layout="closing"], .slide[data-layout="statement"]{
+  padding:120px; justify-content:center;
+}
+.slide[data-layout="title"] .eyebrow, .slide[data-layout="closing"] .eyebrow{margin-bottom:36px}
+.slide[data-layout="title"] .subtitle, .slide[data-layout="closing"] .subtitle{margin-top:44px}
+.slide[data-layout="statement"] .eyebrow{margin-bottom:40px}
+
+/* section divider */
+.slide[data-layout="section"]{padding:110px 120px; justify-content:center}
+.slide[data-layout="section"] .title{font-size:var(--bs-section-size, 108px)}
+.slide[data-layout="section"] .eyebrow{margin-bottom:32px; opacity:0.85}
+.slide[data-layout="section"] .subtitle{margin-top:36px; color:var(--ink); opacity:0.92}
+
+/* claim: the workhorse. A sentence headline, then the evidence for it. */
+.slide[data-layout="claim"] .claim{margin-bottom:36px}
+.evidence{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; justify-content:center}
+.evidence > svg, .evidence > img{display:block; max-width:100%; max-height:100%}
+.evidence[data-build]{display:block}
+.evidence[data-build] > svg{width:100%; height:100%}
+
+/* claim with a short list beside the evidence: evidence takes the wide column */
+.split{flex:1 1 auto; min-height:0; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:72px; align-items:center}
+.split.even{grid-template-columns:1fr 1fr}
+.split > .evidence{height:100%}
+
+/* short parallel points. Four at most, two lines each: the audit counts them */
+.points{list-style:none; padding:0; display:flex; flex-direction:column; gap:28px; max-width:1500px}
+.points li{display:grid; grid-template-columns:16px 1fr; column-gap:26px; font-size:var(--bs-body-size, 40px); line-height:1.3}
+.points li::before{content:""; width:16px; height:16px; background:var(--deco); margin-top:calc((var(--bs-body-size, 40px) * 1.3 - 16px) / 2)}
+
+/* evidence: a dense display the speaker stops and walks through. Small claim, big exhibit. */
+.slide[data-layout="evidence"]{padding:64px 96px 56px}
+.slide[data-layout="evidence"] .claim{font-size:48px; margin-bottom:24px}
+
+/* quote */
+.quote{font-family:var(--bs-font-head); font-size:60px; line-height:1.22; max-width:1500px; text-wrap:pretty}
+.quote + .label{margin-top:36px}
+
+/* code and tables, sized for the back row */
+pre.code{
+  margin:0; padding:36px 40px; background:var(--surface); color:var(--ink); border:1px solid var(--hair);
+  font-family:var(--bs-font-mono); font-size:34px; line-height:1.45; white-space:pre; overflow:hidden;
+}
+table.data{border-collapse:collapse; font-size:var(--bs-body-size, 40px); line-height:1.25}
+table.data th{font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); font-weight:700; text-align:left; color:var(--soft); padding:0 48px 14px 0; border-bottom:2px solid var(--ink)}
+table.data td{padding:16px 48px 16px 0; border-bottom:1px solid var(--hair)}
+table.data td.num, table.data th.num{text-align:right}
+
+/* logo: title and closing slides only (a logo on every slide is the first thing coherence cuts) */
+.logo{background:no-repeat left center / contain; height:104px; width:640px; margin-top:64px}
+.logo[data-logo="mark"]{background-image:var(--bs-logo-mark); width:112px; height:112px}
+.logo[data-logo="lockup"]{background-image:var(--bs-logo-lockup)}
+.slide[data-tone="dark"] .logo[data-logo="mark"], .slide[data-tone="accent"] .logo[data-logo="mark"]{background-image:var(--bs-logo-mark-on-dark, var(--bs-logo-mark))}
+.slide[data-tone="dark"] .logo[data-logo="lockup"], .slide[data-tone="accent"] .logo[data-logo="lockup"]{background-image:var(--bs-logo-lockup-on-dark, var(--bs-logo-lockup))}
+
+/* ---------- drawing with tokens: classes for inline SVG, so an exhibit restyles with the deck ---------- */
+/* set on the svg, not on its text: a CSS rule on <text> would override the fill and font-family
+   attributes a build sets, and an attribute on the element beats what it inherits */
+.slide svg{font-family:var(--bs-font-label); fill:var(--ink)}
+.slide svg text.num{font-family:var(--bs-font-mono)}
+.f-ink{fill:var(--ink)} .f-soft{fill:var(--soft)} .f-accent{fill:var(--accent)} .f-deco{fill:var(--deco)}
+.f-hair{fill:var(--hair)} .f-surface{fill:var(--surface)} .f-tint{fill:var(--tint)} .f-ground{fill:var(--ground)} .f-none{fill:none}
+.s-ink{stroke:var(--ink)} .s-soft{stroke:var(--soft)} .s-accent{stroke:var(--accent)} .s-deco{stroke:var(--deco)} .s-hair{stroke:var(--hair)}
+
+/* ---------- steps: an element with data-step="n" appears on the nth press of Next ---------- */
+[data-step]{opacity:0; visibility:hidden}
+[data-step].is-on{opacity:1; visibility:visible}
+.slide.is-active [data-step].is-on.is-new{animation:bs-rise 450ms var(--bs-ease) both}
+@keyframes bs-rise{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion: reduce){ .slide.is-active [data-step].is-on.is-new{animation:none} }
+
+/* ---------- viewer chrome ---------- */
+#controls{
+  position:absolute; right:14px; bottom:14px; z-index:10; display:flex; align-items:center; gap:2px; padding:4px;
+  background:var(--chrome-bg); border:1px solid var(--chrome-line); color:var(--chrome-fg);
+  font-family:system-ui, sans-serif; opacity:0.3; transition:opacity 200ms var(--bs-ease);
+}
+#controls:hover, #controls:focus-within{opacity:1}
+#controls button, #thumbs .close{
+  appearance:none; border:0; background:transparent; color:inherit; cursor:pointer;
+  width:34px; height:34px; display:grid; place-items:center; padding:0;
+}
+#controls button:hover, #thumbs .close:hover{background:var(--chrome-hover)}
+#controls button[disabled]{opacity:0.35; cursor:default}
+#controls button[aria-pressed="true"]{background:var(--chrome-hover)}
+#controls svg, #thumbs .close svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:square}
+#counter{min-width:66px; text-align:center; font:13px ui-monospace, Menlo, monospace; font-variant-numeric:tabular-nums}
+#pips{display:flex; gap:4px; padding:0 6px 0 2px}
+#pips:empty{display:none}
+.pip{width:6px; height:6px; background:var(--chrome-line)}
+.pip.on{background:var(--chrome-fg)}
+.sep{width:1px; height:20px; background:var(--chrome-line); margin:0 4px}
+button:focus-visible, .thumb:focus-visible{outline:3px solid var(--chrome-fg); outline-offset:2px}
+
+#notes{
+  display:none; flex:none; height:min(32vh, 280px); overflow:auto; padding:18px 28px 20px;
+  background:var(--chrome-bg); border-top:1px solid var(--chrome-line); color:var(--chrome-fg);
+  font:17px/1.55 system-ui, sans-serif;
+}
+body.notes-open #notes{display:block}
+#notes h2{margin:0 0 8px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--chrome-muted)}
+#notes p{margin:0 0 10px; max-width:78ch}
+
+#thumbs{position:absolute; inset:0; z-index:20; display:none; overflow:auto; background:var(--chrome-stage); padding:24px; font-family:system-ui, sans-serif}
+#thumbs.open{display:block}
+#thumbs .bar{display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto 18px}
+#thumbs .bar h2{margin:0; font-size:15px; font-weight:700; color:var(--chrome-fg)}
+#thumbs .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:18px; max-width:1400px; margin:0 auto}
+.thumb{appearance:none; padding:0; margin:0; border:1px solid var(--chrome-line); background:#fff; cursor:pointer; position:relative; overflow:hidden; aspect-ratio:16 / 9; width:100%; display:block}
+.thumb.current{outline:3px solid var(--chrome-fg); outline-offset:2px}
+.thumb-inner{position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; pointer-events:none; text-align:left}
+.thumb-inner .slide{display:flex}
+.thumb-inner [data-step]{opacity:1; visibility:visible}
+.thumb-num{position:absolute; left:0; bottom:0; padding:3px 7px; background:rgba(0,0,0,0.72); color:#fff; font:12px/1.2 ui-monospace, Menlo, monospace}
+
+/* ---------- ghost deck and audit panels (?ghost, ?audit) ---------- */
+#bs-panel{
+  position:absolute; inset:0; z-index:30; overflow:auto; padding:32px 40px; background:var(--chrome-stage);
+  color:var(--chrome-fg); font:16px/1.5 ui-monospace, Menlo, monospace; white-space:pre-wrap;
+}
+#bs-panel h2{margin:0 0 14px; font:700 15px system-ui, sans-serif}
+
+/* ---------- print: every slide in its final state, one per page ---------- */
+@media print{
+  @page{size:1920px 1080px; margin:0}
+  html, body{height:auto; overflow:visible; display:block; background:#fff}
+  #stage{overflow:visible; height:auto}
+  #deck{position:static; transform:none !important; width:1920px; height:auto}
+  .slide{position:relative; display:flex !important; width:1920px; height:1080px; break-after:page; page-break-after:always}
+  .slide:last-child{break-after:auto; page-break-after:auto}
+  [data-step]{opacity:1 !important; visibility:visible !important; animation:none !important}
+  #controls, #notes, #thumbs, #bs-panel, #live{display:none !important}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}

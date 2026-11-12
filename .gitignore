@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+*.pyc
+*-shots/
+# Logos are trademarks of their owners. They stay on your computer and out of the repo.
+# Each style's logos/README.md says which files to put there.
+styles/*/logos/*
+!styles/*/logos/README.md

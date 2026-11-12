@@ -1,0 +1,53 @@
+/* style: northeastern (the default)
+   Read from the Northeastern Brand Center colour page and from the course lecture decks
+   (Computational Skepticism, Prompt Engineering, CSYE 7270). White slides dominate, black
+   for the title, statements and the close, red for section dividers. Lato throughout. */
+:root{
+  /* light slides */
+  --bs-ground:#FFFFFF;
+  --bs-surface:#F6F6F4;        /* NU Canvas: panels one step off the ground */
+  --bs-ink:#000000;
+  --bs-ink-soft:#545454;       /* captions, sources, context */
+  --bs-rule:#E3E3E3;           /* hairlines and gridlines */
+  --bs-accent:#C8102E;         /* NU Red: the single "look here" colour */
+  --bs-accent-deco:#C8102E;    /* rules, bars and marks */
+  --bs-accent-tint:#FBE7EA;    /* pale red panel behind the thing that matters */
+
+  /* dark slides. NU Red on black is 3.6:1, under the 4.5:1 floor, so on black the red is
+     decoration only and emphasis text is white. */
+  --bs-dark-ground:#000000;
+  --bs-dark-surface:#1A1A1A;
+  --bs-dark-ink:#FFFFFF;
+  --bs-dark-ink-soft:#C4C4C4;
+  --bs-dark-rule:#404040;
+  --bs-dark-accent:#FFFFFF;
+  --bs-dark-accent-deco:#C8102E;
+
+  /* accent slides (section dividers) */
+  --bs-accent-ground:#C8102E;
+  --bs-on-accent:#FFFFFF;
+
+  /* data: red for the series that matters, greys for the rest. No categorical rainbow. */
+  --bs-data-1:#C8102E; --bs-data-2:#000000; --bs-data-3:#545454; --bs-data-4:#787878; --bs-data-5:#C4C4C4;
+  /* ordered quantities: a lightness ramp, light to dark */
+  --bs-seq-1:#E3E3E3; --bs-seq-2:#C4C4C4; --bs-seq-3:#909090; --bs-seq-4:#545454; --bs-seq-5:#000000;
+
+  /* type */
+  --bs-font-head:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-body:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-label:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --bs-head-weight:400;        /* headings are regular weight, sentence case */
+  --bs-title-size:104px; --bs-section-size:108px; --bs-statement-size:80px;
+  --bs-claim-size:64px; --bs-body-size:40px; --bs-label-size:32px;
+  --bs-eyebrow-case:uppercase; --bs-eyebrow-tracking:0.12em;
+}
+
+/* signature: one red rule across the top of every slide that is not red already */
+.slide::before{content:""; position:absolute; top:0; left:0; right:0; height:8px; background:var(--deco)}
+.slide[data-tone="accent"]::before{display:none}
+.slide[data-layout="title"]::before, .slide[data-layout="closing"]::before{height:10px}
+/* and a short red bar under the title */
+.slide[data-layout="title"] .title::after, .slide[data-layout="closing"] .title::after{
+  content:""; display:block; width:120px; height:8px; background:var(--deco); margin-top:52px;
+}

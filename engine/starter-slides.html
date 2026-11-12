@@ -1,0 +1,93 @@
+
+<!-- TITLE: one per deck. The logo line may be deleted. -->
+<section class="slide" data-layout="title" data-tone="dark">
+  <p class="eyebrow">Course or occasion</p>
+  <h1 class="title">{{TITLE}}</h1>
+  <p class="subtitle">Speaker name, date</p>
+  <div class="logo" data-logo="lockup" role="img" aria-label="Logo"></div>
+  <aside class="notes"><p>What this talk is for, in two sentences. Who is in the room and what they should be able to do afterwards.</p></aside>
+</section>
+
+<!-- CLAIM: the workhorse. A sentence headline, then the evidence for it. -->
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Part of the argument</p>
+  <h2 class="claim">A sentence headline states the one thing this slide claims.</h2>
+  <p class="status">Illustrative data</p>
+  <div class="evidence">
+    <svg viewBox="0 0 1680 600" role="img" aria-label="Three bars: 62, 41 and 18 percent. The lowest, group C, is the one the claim is about.">
+      <rect x="320" y="60" width="1240" height="88" class="f-surface"/>
+      <rect x="320" y="60" width="769" height="88" class="f-ink"/>
+      <text x="0" y="118" font-size="40">Group A</text>
+      <text x="1109" y="118" font-size="40" class="num">62%</text>
+      <rect x="320" y="230" width="1240" height="88" class="f-surface"/>
+      <rect x="320" y="230" width="508" height="88" class="f-ink"/>
+      <text x="0" y="288" font-size="40">Group B</text>
+      <text x="848" y="288" font-size="40" class="num">41%</text>
+      <rect x="320" y="400" width="1240" height="88" class="f-surface"/>
+      <rect x="320" y="400" width="223" height="88" class="f-deco"/>
+      <text x="0" y="458" font-size="40" font-weight="700">Group C</text>
+      <text x="563" y="458" font-size="40" font-weight="700" class="num f-accent">18%</text>
+      <text x="700" y="458" font-size="32" class="f-accent">the label sits beside the bar it names</text>
+    </svg>
+  </div>
+  <p class="source">Source: author, venue, year</p>
+  <aside class="notes">
+    <p>The explanation lives here, in your voice. The slide shows what the room must see: the numbers and their labels.</p>
+    <p>Say why group C matters. Do not read the headline aloud.</p>
+  </aside>
+</section>
+
+<!-- CLAIM with a build: each press of Next adds one step. The build is registered in the script at the bottom. -->
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">A build</p>
+  <h2 class="claim">A complex exhibit is built in stages, one press at a time.</h2>
+  <p class="status">Illustrative data</p>
+  <div class="evidence" data-build="starter-bars"></div>
+  <aside class="notes">
+    <p><strong>On entering:</strong> the empty frame. Say what the axis measures.</p>
+    <p><strong>Step 1:</strong> the bars grow. Name the comparison.</p>
+    <p><strong>Step 2:</strong> the one that matters turns the accent colour and gets its label.</p>
+  </aside>
+</section>
+
+<!-- CLAIM with a few parallel points beside the evidence. Four points at most, two lines each. -->
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Evidence and a short list</p>
+  <h2 class="claim">A short list of parallel points can sit beside the evidence.</h2>
+  <div class="split">
+    <div class="evidence">
+      <svg viewBox="0 0 900 520" role="img" aria-label="A placeholder frame for a diagram, photograph or chart.">
+        <rect x="2" y="2" width="896" height="516" class="f-surface s-hair" stroke-width="2"/>
+        <text x="450" y="272" font-size="36" text-anchor="middle" class="f-soft">diagram, photograph or chart</text>
+      </svg>
+    </div>
+    <ul class="points">
+      <li>Show the short list whole</li>
+      <li>Four items at most</li>
+      <li>Two lines each at most</li>
+    </ul>
+  </div>
+  <aside class="notes"><p>Bullets are fine for items that are truly parallel. They are a poor container for an argument: that goes in the headline and in what you say.</p></aside>
+</section>
+
+<!-- STATEMENT: one sentence the talk turns on -->
+<section class="slide" data-layout="statement" data-tone="dark">
+  <p class="eyebrow">The turn</p>
+  <h2 class="statement">One sentence the whole talk turns on.</h2>
+  <aside class="notes"><p>Pause here. Say why this sentence matters before moving on.</p></aside>
+</section>
+
+<!-- SECTION divider: this format is used for section starts and nothing else -->
+<section class="slide" data-layout="section" data-tone="accent">
+  <p class="eyebrow">Part two</p>
+  <h2 class="title">Section title</h2>
+  <p class="subtitle">What this part does</p>
+</section>
+
+<!-- CLOSING: end the talk on purpose -->
+<section class="slide" data-layout="closing" data-tone="dark">
+  <p class="eyebrow">Takeaway</p>
+  <h2 class="title">The one thing to remember, as a sentence.</h2>
+  <p class="subtitle">What to do next, or where the full document lives</p>
+  <aside class="notes"><p>What would change my mind. Where the handout with the data and caveats is.</p></aside>
+</section>

@@ -1,0 +1,61 @@
+/* style: seis
+   SEIS (Software Engineering and Information Systems, Northeastern College of Engineering).
+   SEIS is not a separate brand: it is Northeastern's brand worn by one unit. The tokens are
+   the Northeastern tokens. What changes: the title and closing slides are white so the SEIS
+   lockup (dark type on a clear ground) can sit on them, and they carry the unit's name. */
+:root{
+  --bs-ground:#FFFFFF;
+  --bs-surface:#F6F6F4;
+  --bs-ink:#000000;
+  --bs-ink-soft:#545454;
+  --bs-rule:#E3E3E3;
+  --bs-accent:#C8102E;
+  --bs-accent-deco:#C8102E;
+  --bs-accent-tint:#FBE7EA;
+
+  --bs-dark-ground:#000000;
+  --bs-dark-surface:#1A1A1A;
+  --bs-dark-ink:#FFFFFF;
+  --bs-dark-ink-soft:#C4C4C4;
+  --bs-dark-rule:#404040;
+  --bs-dark-accent:#FFFFFF;
+  --bs-dark-accent-deco:#C8102E;
+
+  --bs-accent-ground:#C8102E;
+  --bs-on-accent:#FFFFFF;
+
+  --bs-data-1:#C8102E; --bs-data-2:#000000; --bs-data-3:#545454; --bs-data-4:#787878; --bs-data-5:#C4C4C4;
+  --bs-seq-1:#E3E3E3; --bs-seq-2:#C4C4C4; --bs-seq-3:#909090; --bs-seq-4:#545454; --bs-seq-5:#000000;
+
+  --bs-font-head:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-body:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-label:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --bs-head-weight:400;
+  --bs-title-size:104px; --bs-section-size:108px; --bs-statement-size:80px;
+  --bs-claim-size:64px; --bs-body-size:40px; --bs-label-size:32px;
+  --bs-eyebrow-case:uppercase; --bs-eyebrow-tracking:0.12em;
+}
+
+/* signature: the Northeastern red rule */
+.slide::before{content:""; position:absolute; top:0; left:0; right:0; height:8px; background:var(--deco)}
+.slide[data-tone="accent"]::before{display:none}
+.slide[data-layout="title"]::before, .slide[data-layout="closing"]::before{height:10px}
+
+/* title and closing slides are white whatever tone the deck asks for */
+.slide[data-layout="title"][data-tone], .slide[data-layout="closing"][data-tone],
+.slide[data-layout="title"], .slide[data-layout="closing"]{
+  --ground:var(--bs-ground); --surface:var(--bs-surface); --ink:var(--bs-ink); --soft:var(--bs-ink-soft);
+  --hair:var(--bs-rule); --accent:var(--bs-accent); --deco:var(--bs-accent-deco); --tint:var(--bs-accent-tint);
+}
+.slide[data-layout="title"] .title::after, .slide[data-layout="closing"] .title::after{
+  content:""; display:block; width:120px; height:8px; background:var(--deco); margin-top:52px;
+}
+/* the unit's name, bottom left of the title and closing slides */
+.slide[data-layout="title"]::after, .slide[data-layout="closing"]::after{
+  content:"Software Engineering and Information Systems  ·  Northeastern University College of Engineering";
+  position:absolute; left:120px; bottom:64px; font-family:var(--bs-font-label);
+  font-size:var(--bs-label-size); line-height:1.2; color:var(--soft);
+}
+/* the SEIS lockup is a 463 x 149 raster: show it at that size, never larger */
+.logo[data-logo="lockup"]{width:463px; height:149px; margin-top:48px}

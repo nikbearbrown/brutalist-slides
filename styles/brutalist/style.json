@@ -1,0 +1,33 @@
+{
+  "id": "brutalist",
+  "name": "Brutalist",
+  "version": 1,
+  "about": "The Brutalist toolkit's look: a cream page, warm ink, EB Garamond for the argument, Lato Bold for labels, one terracotta spark. Mostly light slides, with dark ones as punctuation.",
+  "sources": [
+    "brutalist.art DESIGN-PRINCIPLES.md (the palette, the type roles, restraint, light-to-dark balance)",
+    "The Brutalist-look HTML decks (cream paper, serif headlines, one warm accent)",
+    "bearbrown.co colour tokens (burnt orange #8B3A0F as the text-safe accent, the dark set)"
+  ],
+  "fonts": {
+    "google": "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Lato:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap",
+    "local": [
+      {"family": "EB Garamond", "weight": 400, "style": "normal", "file": "EBGaramond-Regular.ttf"},
+      {"family": "EB Garamond", "weight": 500, "style": "normal", "file": "EBGaramond-Medium.ttf"},
+      {"family": "EB Garamond", "weight": 400, "style": "italic", "file": "EBGaramond-Italic.ttf"},
+      {"family": "Lato", "weight": 400, "style": "normal", "file": "Lato-Regular.ttf"},
+      {"family": "Lato", "weight": 700, "style": "normal", "file": "Lato-Bold.ttf"},
+      {"family": "JetBrains Mono", "weight": 400, "style": "normal", "file": "JetBrainsMono-Regular.ttf"},
+      {"family": "JetBrains Mono", "weight": 700, "style": "normal", "file": "JetBrainsMono-Bold.ttf"}
+    ]
+  },
+  "logos": {},
+  "rules": [
+    "Warm, muted, restrained. No neon, no gradients, no glows, no drop shadows.",
+    "Terracotta (#D97757) is decoration only: it is under 3:1 on cream, so it never colours text or a thin line that must be read. Emphasis text is burnt orange (#8B3A0F) on cream and amber (#E8A020) on espresso.",
+    "The accent is an event. Use it at the one place the slide turns, never as a resting fill.",
+    "Serif for the argument (headlines, statements, body). Sans (Lato Bold) for labels, axes and sources. Mono for code and numbers. No other faces.",
+    "About four slides in five are light. A dark slide marks a shift: a statement, a turn in the argument.",
+    "No invented marks: no orbs, sparks, circuit boards, neural-net nodes, robot heads or holograms to mean AI.",
+    "Icons, when used, are simple line drawings. If the right one does not exist, ask for it; do not improvise a near miss."
+  ]
+}

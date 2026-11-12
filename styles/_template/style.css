@@ -1,0 +1,46 @@
+/* style: _template
+   A plain starting point: the tokens from Part 12 of docs/evidence.md. Copy it with
+   ./bs new-style <id>, then change every value to your own. ./bs styles <id> shows what fails. */
+:root{
+  /* light slides */
+  --bs-ground:#FFFFFF;
+  --bs-surface:#F3F4F6;        /* panels one step off the ground */
+  --bs-ink:#111827;            /* main text */
+  --bs-ink-soft:#4B5563;       /* captions, sources, context */
+  --bs-rule:#E5E7EB;           /* hairlines and gridlines */
+  --bs-accent:#B45309;         /* the single "look here" colour. Must be 4.5:1 on the ground */
+  --bs-accent-deco:#B45309;    /* bars, rules and marks. May be brighter than the text accent */
+  --bs-accent-tint:#FEF3C7;    /* a pale panel behind the thing that matters */
+
+  /* dark slides */
+  --bs-dark-ground:#111827;
+  --bs-dark-surface:#1F2937;
+  --bs-dark-ink:#F9FAFB;
+  --bs-dark-ink-soft:#D1D5DB;
+  --bs-dark-rule:#374151;
+  --bs-dark-accent:#FBBF24;    /* must be 4.5:1 on the dark ground */
+  --bs-dark-accent-deco:#FBBF24;
+
+  /* accent slides (section dividers) */
+  --bs-accent-ground:#B45309;
+  --bs-on-accent:#FFFFFF;
+
+  /* data: the first is the series the claim is about; the rest are neutrals */
+  --bs-data-1:#B45309; --bs-data-2:#111827; --bs-data-3:#4B5563; --bs-data-4:#6B7280; --bs-data-5:#9CA3AF;
+  /* ordered quantities: lightness, light to dark */
+  --bs-seq-1:#E5E7EB; --bs-seq-2:#9CA3AF; --bs-seq-3:#6B7280; --bs-seq-4:#374151; --bs-seq-5:#111827;
+
+  /* type: system faces, so nothing has to load */
+  --bs-font-head:system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --bs-font-body:system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --bs-font-label:system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --bs-font-mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --bs-head-weight:600;
+  --bs-title-size:104px; --bs-section-size:108px; --bs-statement-size:80px;
+  --bs-claim-size:64px;        /* the sentence headline */
+  --bs-body-size:40px;         /* floor: 40 */
+  --bs-label-size:32px;        /* floor: 32 */
+  --bs-eyebrow-case:none; --bs-eyebrow-tracking:0;
+}
+
+/* signature: add at most a rule or a bar here, drawn with var(--deco). Nothing else. */

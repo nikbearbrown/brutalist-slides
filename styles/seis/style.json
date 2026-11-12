@@ -1,0 +1,31 @@
+{
+  "id": "seis",
+  "name": "SEIS",
+  "version": 1,
+  "extends": "northeastern",
+  "about": "Software Engineering and Information Systems, Northeastern College of Engineering. The Northeastern colours and type, with white title and closing slides that carry the SEIS lockup and the unit's name.",
+  "sources": [
+    "styles/northeastern (SEIS inherits every Northeastern rule)",
+    "The SEIS unit marks supplied by the department (a 463 x 149 lockup and a 160 x 160 tile)"
+  ],
+  "fonts": {
+    "google": "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap",
+    "local": [
+      {"family": "Lato", "weight": 400, "style": "normal", "file": "Lato-Regular.ttf"},
+      {"family": "Lato", "weight": 700, "style": "normal", "file": "Lato-Bold.ttf"},
+      {"family": "JetBrains Mono", "weight": 400, "style": "normal", "file": "JetBrainsMono-Regular.ttf"},
+      {"family": "JetBrains Mono", "weight": 700, "style": "normal", "file": "JetBrainsMono-Bold.ttf"}
+    ]
+  },
+  "logos": {
+    "mark": "logos/monogram-red.svg",
+    "mark-on-dark": "logos/monogram-white.svg",
+    "lockup": "logos/seis-logo.png"
+  },
+  "rules": [
+    "Everything in styles/northeastern/style.json applies here unchanged.",
+    "SEIS has no palette of its own. Units may not invent identity colours or marks.",
+    "The SEIS lockup is a low-resolution raster (463 x 149). Show it at that size or smaller, on white, on the title and closing slides only. Ask the department for a vector file before using it larger.",
+    "Sentence case, no hype, no superlatives the source did not earn."
+  ]
+}

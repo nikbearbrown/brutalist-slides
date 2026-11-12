@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-style="{{STYLE}}" data-purpose="{{PURPOSE}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="generator" content="brutalist-slides {{VERSION}}">
+<title>{{TITLE}}</title>
+<!-- bs:fonts -->
+{{FONTS}}
+<!-- /bs:fonts -->
+<style id="bs-engine">
+{{ENGINE_CSS}}
+</style>
+<style id="bs-style">
+{{STYLE_CSS}}
+</style>
+<style id="bs-deck">
+/* CSS for this deck only. Colours come from the working tokens, so the deck can be restyled:
+   --ground --surface --ink --soft --hair --accent (text-safe) --deco (marks only) --tint */
+</style>
+</head>
+<body>
+<main id="stage" aria-label="{{TITLE}}">
+<div id="deck">
+{{SLIDES}}
+</div>
+</main>
+<!-- bs:d3 -->
+{{D3}}
+<!-- /bs:d3 -->
+<script id="bs-engine-js">
+{{ENGINE_JS}}
+</script>
+<script id="bs-deck-js">
+{{DECK_JS}}
+</script>
+</body>
+</html>

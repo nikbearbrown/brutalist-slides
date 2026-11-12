@@ -1,0 +1,18 @@
+{
+  "id": "_template",
+  "name": "Template",
+  "version": 1,
+  "about": "One sentence: whose look this is and what it feels like.",
+  "sources": [
+    "Where each colour and typeface was read from, with the date."
+  ],
+  "fonts": {
+    "google": "",
+    "local": [],
+    "note": "System faces by default. To use web fonts, set a Google Fonts stylesheet address in google and list the same faces as files under fonts/ in local."
+  },
+  "logos": {},
+  "rules": [
+    "The brand's own rules, in plain sentences: what the accent may and may not mean, what is forbidden, how the logo is used."
+  ]
+}

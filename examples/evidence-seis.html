@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" data-style="seis" data-purpose="projection" data-logos="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="generator" content="brutalist-slides 0.1.0">
+<title>What the evidence says about slides</title>
+<!-- bs:fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="bs-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap">
+<!-- /bs:fonts -->
+<style id="bs-engine">
+/* brutalist-slides engine 0.1.0
+   Structure, layouts and viewer chrome. No brand colours and no typefaces live here:
+   every colour and face is a --bs-* token set by the style block that follows this one.
+   Canvas: a fixed 1920 x 1080 stage, scaled to fit the window. All sizes are stage pixels. */
+
+:root{
+  /* floors the audit enforces; a style may raise them, never lower them for a projected deck */
+  --bs-floor-body:40;      /* px. Kosslyn's 20 pt on a 7.5 in slide = 3.7% of height */
+  --bs-floor-label:32;     /* px. chart, diagram and source labels: never smaller */
+  --bs-min-contrast:4.5;   /* WCAG AA for normal text, used for ALL projected text */
+  --bs-ease:cubic-bezier(0.4,0,0.2,1);
+  /* viewer chrome (follows the system theme; slides keep their own fixed colours) */
+  --chrome-stage:#E9E9E9; --chrome-bg:rgba(255,255,255,0.95); --chrome-fg:#1A1A1A;
+  --chrome-line:#C4C4C4; --chrome-muted:#545454; --chrome-hover:rgba(0,0,0,0.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{--chrome-stage:#141414; --chrome-bg:rgba(26,26,26,0.95); --chrome-fg:#F2F2F2;
+        --chrome-line:#404040; --chrome-muted:#909090; --chrome-hover:rgba(255,255,255,0.09)}
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%}
+body{
+  height:100%; margin:0; overflow:hidden; display:flex; flex-direction:column;
+  background:var(--chrome-stage); color:var(--chrome-fg);
+  font-family:var(--bs-font-body, system-ui, sans-serif);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+:fullscreen body, body:fullscreen{background:#000}
+.sr-only{position:absolute; left:0; top:0; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------- stage ---------- */
+#stage{position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action:pan-y}
+#deck{position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0}
+
+/* ---------- slide base ---------- */
+.slide{
+  /* the working set. Layout CSS and builds use these six, never the brand tokens directly */
+  --ground:var(--bs-ground); --surface:var(--bs-surface); --ink:var(--bs-ink);
+  --soft:var(--bs-ink-soft); --hair:var(--bs-rule); --accent:var(--bs-accent);
+  --deco:var(--bs-accent-deco, var(--bs-accent)); --tint:var(--bs-accent-tint);
+  position:absolute; inset:0; display:none; flex-direction:column; overflow:hidden;
+  padding:84px 120px 64px;
+  background:var(--ground); color:var(--ink);
+  font-family:var(--bs-font-body); font-size:var(--bs-body-size, 40px); line-height:1.35;
+}
+.slide[data-tone="dark"]{
+  --ground:var(--bs-dark-ground); --surface:var(--bs-dark-surface); --ink:var(--bs-dark-ink);
+  --soft:var(--bs-dark-ink-soft); --hair:var(--bs-dark-rule); --accent:var(--bs-dark-accent);
+  --deco:var(--bs-dark-accent-deco, var(--bs-dark-accent)); --tint:var(--bs-dark-surface);
+}
+.slide[data-tone="accent"]{
+  --ground:var(--bs-accent-ground); --surface:var(--bs-accent-ground); --ink:var(--bs-on-accent);
+  --soft:var(--bs-on-accent); --hair:var(--bs-on-accent); --accent:var(--bs-on-accent);
+  --deco:var(--bs-on-accent); --tint:var(--bs-accent-ground);
+}
+.slide.is-active{display:flex}
+:where(.slide) :where(h1,h2,h3,p,ul,ol,figure,blockquote){margin:0}
+.slide .notes{display:none}
+
+/* ---------- type roles ---------- */
+.eyebrow{
+  font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); font-weight:700;
+  line-height:1.2; letter-spacing:var(--bs-eyebrow-tracking, 0.12em);
+  text-transform:var(--bs-eyebrow-case, uppercase); color:var(--accent); margin-bottom:22px;
+}
+.claim{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-claim-size, 64px); line-height:1.15; letter-spacing:-0.01em;
+  max-width:1680px; text-wrap:balance; color:var(--ink);
+}
+.title{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-title-size, 104px); line-height:1.02; letter-spacing:-0.02em;
+  max-width:1560px; text-wrap:balance;
+}
+.subtitle{font-size:44px; line-height:1.3; color:var(--soft); max-width:1400px; text-wrap:pretty}
+.statement{
+  font-family:var(--bs-font-head); font-weight:var(--bs-head-weight, 400);
+  font-size:var(--bs-statement-size, 80px); line-height:1.12; letter-spacing:-0.015em;
+  max-width:1560px; text-wrap:balance;
+}
+.label{font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); line-height:1.3; color:var(--soft)}
+.source{font-size:var(--bs-label-size, 32px); line-height:1.3; color:var(--soft); margin-top:auto; padding-top:18px}
+.num{font-family:var(--bs-font-mono); font-variant-numeric:tabular-nums}
+.accent{color:var(--accent)}
+.context{color:var(--soft)}
+strong{font-weight:700}
+
+/* status of what is shown: observed, computed, illustrative, conceptual */
+.status{
+  position:absolute; right:120px; top:84px; font-family:var(--bs-font-label);
+  font-size:var(--bs-label-size, 32px); line-height:1.2; color:var(--soft);
+}
+
+/* ---------- layouts ---------- */
+/* title and closing: one per deck each */
+.slide[data-layout="title"], .slide[data-layout="closing"], .slide[data-layout="statement"]{
+  padding:120px; justify-content:center;
+}
+.slide[data-layout="title"] .eyebrow, .slide[data-layout="closing"] .eyebrow{margin-bottom:36px}
+.slide[data-layout="title"] .subtitle, .slide[data-layout="closing"] .subtitle{margin-top:44px}
+.slide[data-layout="statement"] .eyebrow{margin-bottom:40px}
+
+/* section divider */
+.slide[data-layout="section"]{padding:110px 120px; justify-content:center}
+.slide[data-layout="section"] .title{font-size:var(--bs-section-size, 108px)}
+.slide[data-layout="section"] .eyebrow{margin-bottom:32px; opacity:0.85}
+.slide[data-layout="section"] .subtitle{margin-top:36px; color:var(--ink); opacity:0.92}
+
+/* claim: the workhorse. A sentence headline, then the evidence for it. */
+.slide[data-layout="claim"] .claim{margin-bottom:36px}
+.evidence{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; justify-content:center}
+.evidence > svg, .evidence > img{display:block; max-width:100%; max-height:100%}
+.evidence[data-build]{display:block}
+.evidence[data-build] > svg{width:100%; height:100%}
+
+/* claim with a short list beside the evidence: evidence takes the wide column */
+.split{flex:1 1 auto; min-height:0; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:72px; align-items:center}
+.split.even{grid-template-columns:1fr 1fr}
+.split > .evidence{height:100%}
+
+/* short parallel points. Four at most, two lines each: the audit counts them */
+.points{list-style:none; padding:0; display:flex; flex-direction:column; gap:28px; max-width:1500px}
+.points li{display:grid; grid-template-columns:16px 1fr; column-gap:26px; font-size:var(--bs-body-size, 40px); line-height:1.3}
+.points li::before{content:""; width:16px; height:16px; background:var(--deco); margin-top:calc((var(--bs-body-size, 40px) * 1.3 - 16px) / 2)}
+
+/* evidence: a dense display the speaker stops and walks through. Small claim, big exhibit. */
+.slide[data-layout="evidence"]{padding:64px 96px 56px}
+.slide[data-layout="evidence"] .claim{font-size:48px; margin-bottom:24px}
+
+/* quote */
+.quote{font-family:var(--bs-font-head); font-size:60px; line-height:1.22; max-width:1500px; text-wrap:pretty}
+.quote + .label{margin-top:36px}
+
+/* code and tables, sized for the back row */
+pre.code{
+  margin:0; padding:36px 40px; background:var(--surface); color:var(--ink); border:1px solid var(--hair);
+  font-family:var(--bs-font-mono); font-size:34px; line-height:1.45; white-space:pre; overflow:hidden;
+}
+table.data{border-collapse:collapse; font-size:var(--bs-body-size, 40px); line-height:1.25}
+table.data th{font-family:var(--bs-font-label); font-size:var(--bs-label-size, 32px); font-weight:700; text-align:left; color:var(--soft); padding:0 48px 14px 0; border-bottom:2px solid var(--ink)}
+table.data td{padding:16px 48px 16px 0; border-bottom:1px solid var(--hair)}
+table.data td.num, table.data th.num{text-align:right}
+
+/* logo: title and closing slides only (a logo on every slide is the first thing coherence cuts) */
+.logo{background:no-repeat left center / contain; height:104px; width:640px; margin-top:64px}
+.logo[data-logo="mark"]{background-image:var(--bs-logo-mark); width:112px; height:112px}
+.logo[data-logo="lockup"]{background-image:var(--bs-logo-lockup)}
+.slide[data-tone="dark"] .logo[data-logo="mark"], .slide[data-tone="accent"] .logo[data-logo="mark"]{background-image:var(--bs-logo-mark-on-dark, var(--bs-logo-mark))}
+.slide[data-tone="dark"] .logo[data-logo="lockup"], .slide[data-tone="accent"] .logo[data-logo="lockup"]{background-image:var(--bs-logo-lockup-on-dark, var(--bs-logo-lockup))}
+
+/* ---------- drawing with tokens: classes for inline SVG, so an exhibit restyles with the deck ---------- */
+/* set on the svg, not on its text: a CSS rule on <text> would override the fill and font-family
+   attributes a build sets, and an attribute on the element beats what it inherits */
+.slide svg{font-family:var(--bs-font-label); fill:var(--ink)}
+.slide svg text.num{font-family:var(--bs-font-mono)}
+.f-ink{fill:var(--ink)} .f-soft{fill:var(--soft)} .f-accent{fill:var(--accent)} .f-deco{fill:var(--deco)}
+.f-hair{fill:var(--hair)} .f-surface{fill:var(--surface)} .f-tint{fill:var(--tint)} .f-ground{fill:var(--ground)} .f-none{fill:none}
+.s-ink{stroke:var(--ink)} .s-soft{stroke:var(--soft)} .s-accent{stroke:var(--accent)} .s-deco{stroke:var(--deco)} .s-hair{stroke:var(--hair)}
+
+/* ---------- steps: an element with data-step="n" appears on the nth press of Next ---------- */
+[data-step]{opacity:0; visibility:hidden}
+[data-step].is-on{opacity:1; visibility:visible}
+.slide.is-active [data-step].is-on.is-new{animation:bs-rise 450ms var(--bs-ease) both}
+@keyframes bs-rise{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion: reduce){ .slide.is-active [data-step].is-on.is-new{animation:none} }
+
+/* ---------- viewer chrome ---------- */
+#controls{
+  position:absolute; right:14px; bottom:14px; z-index:10; display:flex; align-items:center; gap:2px; padding:4px;
+  background:var(--chrome-bg); border:1px solid var(--chrome-line); color:var(--chrome-fg);
+  font-family:system-ui, sans-serif; opacity:0.3; transition:opacity 200ms var(--bs-ease);
+}
+#controls:hover, #controls:focus-within{opacity:1}
+#controls button, #thumbs .close{
+  appearance:none; border:0; background:transparent; color:inherit; cursor:pointer;
+  width:34px; height:34px; display:grid; place-items:center; padding:0;
+}
+#controls button:hover, #thumbs .close:hover{background:var(--chrome-hover)}
+#controls button[disabled]{opacity:0.35; cursor:default}
+#controls button[aria-pressed="true"]{background:var(--chrome-hover)}
+#controls svg, #thumbs .close svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:square}
+#counter{min-width:66px; text-align:center; font:13px ui-monospace, Menlo, monospace; font-variant-numeric:tabular-nums}
+#pips{display:flex; gap:4px; padding:0 6px 0 2px}
+#pips:empty{display:none}
+.pip{width:6px; height:6px; background:var(--chrome-line)}
+.pip.on{background:var(--chrome-fg)}
+.sep{width:1px; height:20px; background:var(--chrome-line); margin:0 4px}
+button:focus-visible, .thumb:focus-visible{outline:3px solid var(--chrome-fg); outline-offset:2px}
+
+#notes{
+  display:none; flex:none; height:min(32vh, 280px); overflow:auto; padding:18px 28px 20px;
+  background:var(--chrome-bg); border-top:1px solid var(--chrome-line); color:var(--chrome-fg);
+  font:17px/1.55 system-ui, sans-serif;
+}
+body.notes-open #notes{display:block}
+#notes h2{margin:0 0 8px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--chrome-muted)}
+#notes p{margin:0 0 10px; max-width:78ch}
+
+#thumbs{position:absolute; inset:0; z-index:20; display:none; overflow:auto; background:var(--chrome-stage); padding:24px; font-family:system-ui, sans-serif}
+#thumbs.open{display:block}
+#thumbs .bar{display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto 18px}
+#thumbs .bar h2{margin:0; font-size:15px; font-weight:700; color:var(--chrome-fg)}
+#thumbs .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:18px; max-width:1400px; margin:0 auto}
+.thumb{appearance:none; padding:0; margin:0; border:1px solid var(--chrome-line); background:#fff; cursor:pointer; position:relative; overflow:hidden; aspect-ratio:16 / 9; width:100%; display:block}
+.thumb.current{outline:3px solid var(--chrome-fg); outline-offset:2px}
+.thumb-inner{position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; pointer-events:none; text-align:left}
+.thumb-inner .slide{display:flex}
+.thumb-inner [data-step]{opacity:1; visibility:visible}
+.thumb-num{position:absolute; left:0; bottom:0; padding:3px 7px; background:rgba(0,0,0,0.72); color:#fff; font:12px/1.2 ui-monospace, Menlo, monospace}
+
+/* ---------- ghost deck and audit panels (?ghost, ?audit) ---------- */
+#bs-panel{
+  position:absolute; inset:0; z-index:30; overflow:auto; padding:32px 40px; background:var(--chrome-stage);
+  color:var(--chrome-fg); font:16px/1.5 ui-monospace, Menlo, monospace; white-space:pre-wrap;
+}
+#bs-panel h2{margin:0 0 14px; font:700 15px system-ui, sans-serif}
+
+/* ---------- print: every slide in its final state, one per page ---------- */
+@media print{
+  @page{size:1920px 1080px; margin:0}
+  html, body{height:auto; overflow:visible; display:block; background:#fff}
+  #stage{overflow:visible; height:auto}
+  #deck{position:static; transform:none !important; width:1920px; height:auto}
+  .slide{position:relative; display:flex !important; width:1920px; height:1080px; break-after:page; page-break-after:always}
+  .slide:last-child{break-after:auto; page-break-after:auto}
+  [data-step]{opacity:1 !important; visibility:visible !important; animation:none !important}
+  #controls, #notes, #thumbs, #bs-panel, #live{display:none !important}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
+</style>
+<style id="bs-style">
+/* style: seis
+   SEIS (Software Engineering and Information Systems, Northeastern College of Engineering).
+   SEIS is not a separate brand: it is Northeastern's brand worn by one unit. The tokens are
+   the Northeastern tokens. What changes: the title and closing slides are white so the SEIS
+   lockup (dark type on a clear ground) can sit on them, and they carry the unit's name. */
+:root{
+  --bs-ground:#FFFFFF;
+  --bs-surface:#F6F6F4;
+  --bs-ink:#000000;
+  --bs-ink-soft:#545454;
+  --bs-rule:#E3E3E3;
+  --bs-accent:#C8102E;
+  --bs-accent-deco:#C8102E;
+  --bs-accent-tint:#FBE7EA;
+
+  --bs-dark-ground:#000000;
+  --bs-dark-surface:#1A1A1A;
+  --bs-dark-ink:#FFFFFF;
+  --bs-dark-ink-soft:#C4C4C4;
+  --bs-dark-rule:#404040;
+  --bs-dark-accent:#FFFFFF;
+  --bs-dark-accent-deco:#C8102E;
+
+  --bs-accent-ground:#C8102E;
+  --bs-on-accent:#FFFFFF;
+
+  --bs-data-1:#C8102E; --bs-data-2:#000000; --bs-data-3:#545454; --bs-data-4:#787878; --bs-data-5:#C4C4C4;
+  --bs-seq-1:#E3E3E3; --bs-seq-2:#C4C4C4; --bs-seq-3:#909090; --bs-seq-4:#545454; --bs-seq-5:#000000;
+
+  --bs-font-head:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-body:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-label:"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --bs-font-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --bs-head-weight:400;
+  --bs-title-size:104px; --bs-section-size:108px; --bs-statement-size:80px;
+  --bs-claim-size:64px; --bs-body-size:40px; --bs-label-size:32px;
+  --bs-eyebrow-case:uppercase; --bs-eyebrow-tracking:0.12em;
+}
+
+/* signature: the Northeastern red rule */
+.slide::before{content:""; position:absolute; top:0; left:0; right:0; height:8px; background:var(--deco)}
+.slide[data-tone="accent"]::before{display:none}
+.slide[data-layout="title"]::before, .slide[data-layout="closing"]::before{height:10px}
+
+/* title and closing slides are white whatever tone the deck asks for */
+.slide[data-layout="title"][data-tone], .slide[data-layout="closing"][data-tone],
+.slide[data-layout="title"], .slide[data-layout="closing"]{
+  --ground:var(--bs-ground); --surface:var(--bs-surface); --ink:var(--bs-ink); --soft:var(--bs-ink-soft);
+  --hair:var(--bs-rule); --accent:var(--bs-accent); --deco:var(--bs-accent-deco); --tint:var(--bs-accent-tint);
+}
+.slide[data-layout="title"] .title::after, .slide[data-layout="closing"] .title::after{
+  content:""; display:block; width:120px; height:8px; background:var(--deco); margin-top:52px;
+}
+/* the unit's name, bottom left of the title and closing slides */
+.slide[data-layout="title"]::after, .slide[data-layout="closing"]::after{
+  content:"Software Engineering and Information Systems  ·  Northeastern University College of Engineering";
+  position:absolute; left:120px; bottom:64px; font-family:var(--bs-font-label);
+  font-size:var(--bs-label-size); line-height:1.2; color:var(--soft);
+}
+/* the SEIS lockup is a 463 x 149 raster: show it at that size, never larger */
+.logo[data-logo="lockup"]{width:463px; height:149px; margin-top:48px}
+</style>
+<style id="bs-deck">
+/* CSS for this deck only. Colours come from the working tokens, so the deck can be restyled:
+   --ground --surface --ink --soft --hair --accent (text-safe) --deco (marks only) --tint */
+</style>
+</head>
+<body>
+<main id="stage" aria-label="What the evidence says about slides">
+<div id="deck">
+<section class="slide" data-layout="title" data-tone="dark">
+  <p class="eyebrow">brutalist-slides sample deck</p>
+  <h1 class="title">What the evidence says about slides</h1>
+  <p class="subtitle">A short talk that follows its own rules</p>
+  <aside class="notes">
+    <p>This deck is the sample for brutalist-slides. Its content is the evidence base the skills are built on, and every slide is built the way that evidence recommends.</p>
+    <p>Audience: people who make slides for teaching or research and have read the usual advice.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">The medium</p>
+  <h2 class="claim">Across 48 studies, teaching with slides made no average difference to learning.</h2>
+  <p class="status">Observed data</p>
+  <div class="evidence" data-build="neutral"></div>
+  <p class="source">Source: Baker, Goodboy, Bowman and Wright, Computers and Education, 2018</p>
+  <aside class="notes">
+    <p><strong>On entering:</strong> the axis is an effect size. Zero means students learned the same with slides as without.</p>
+    <p><strong>Step 1:</strong> the pooled estimate sits at 0.067, and its interval crosses zero. There was a benefit for school-age students and none for college students. The authors' advice: stop asking whether to use slides and study how they are used. That is what the rest of this talk does.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">The makers</p>
+  <h2 class="claim">Of 140 decks scored against perception research, none was flawless.</h2>
+  <p class="status">Observed data</p>
+  <div class="evidence" data-build="flaws"></div>
+  <p class="source">Source: Kosslyn, Kievit, Russell and Shephard, Frontiers in Psychology, 2012</p>
+  <aside class="notes">
+    <p><strong>On entering:</strong> these are shares of 140 slideshows from research, education, government and business, scored against 137 rules.</p>
+    <p><strong>Step 1:</strong> the commonest faults are about working memory and legibility. Academic decks were no better than business decks.</p>
+    <p><strong>Step 2:</strong> a caution on the numbers. One bad slide flags the whole deck, so these shares run high. The direction is right; the exact figures are soft.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="statement" data-tone="dark">
+  <p class="eyebrow">Why rules are needed</p>
+  <h2 class="statement">Good slide design is not intuitive. It has to be made explicit.</h2>
+  <aside class="notes">
+    <p>In a second experiment, observers often failed to pick the flawed version of a slide. When they picked correctly they often could not say why. So we cannot rely on looking. We need stated rules, and measurements where we can take them.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="section" data-tone="accent">
+  <p class="eyebrow">Part one</p>
+  <h2 class="title">What holds up</h2>
+  <p class="subtitle">Four findings, strongest evidence first</p>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Spatial contiguity</p>
+  <h2 class="claim">Placing words beside what they describe helped in 22 of 22 tests.</h2>
+  <p class="status">Observed data</p>
+  <div class="evidence" data-build="contiguity"></div>
+  <p class="source">Source: Mayer and Fiorella, Cambridge Handbook of Multimedia Learning, 2014</p>
+  <aside class="notes">
+    <p><strong>On entering:</strong> each square is one controlled test of the same idea: put the label next to the thing, not in a legend or a caption somewhere else.</p>
+    <p><strong>Step 1:</strong> all 22 came out the same way, with a large median effect. In practice: label lines and bars directly and delete the legend. One caution that applies to all of this research: the lessons were short and the tests immediate, so expect smaller effects in a real classroom.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Redundancy</p>
+  <h2 class="claim">The case against on-screen text shrank from 0.87 to 0.10 between two tallies.</h2>
+  <p class="status">Observed data</p>
+  <div class="evidence" data-build="redundancy"></div>
+  <p class="source">Sources: Mayer, Journal of Computer Assisted Learning, 2017; Mayer, Multimedia Learning, 3rd edition, 2021</p>
+  <aside class="notes">
+    <p><strong>On entering:</strong> the claim was that adding printed text that repeats the narration hurts learning.</p>
+    <p><strong>Step 1:</strong> in the 2017 review the median effect was large.</p>
+    <p><strong>Step 2:</strong> four years later, 8 of 12 tests were positive and the median was near zero. What survives is narrower: text that repeats the speaker word for word hurts, and brief labels do not. Slide-design books rarely mention the retreat.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">The working rule</p>
+  <h2 class="claim">Show what the room must see, and say what it must understand.</h2>
+  <p class="status">Conceptual illustration</p>
+  <div class="evidence">
+    <svg viewBox="0 0 1680 520" role="img" aria-label="Two panels. On the slide: terms, numbers, equations, labels. In your voice: the explanation, the reasoning, the caveats.">
+      <rect x="1" y="1" width="800" height="518" class="f-surface"/>
+      <text x="48" y="78" font-size="32" font-weight="700" class="f-soft">On the slide</text>
+      <text x="48" y="180" font-size="52">terms</text>
+      <text x="48" y="264" font-size="52">numbers</text>
+      <text x="48" y="348" font-size="52">equations</text>
+      <text x="48" y="432" font-size="52">labels</text>
+      <rect x="879" y="1" width="800" height="518" class="f-tint"/>
+      <text x="927" y="78" font-size="32" font-weight="700" class="f-accent">In your voice</text>
+      <text x="927" y="180" font-size="52">the explanation</text>
+      <text x="927" y="264" font-size="52">the reasoning</text>
+      <text x="927" y="348" font-size="52">the caveats</text>
+    </svg>
+  </div>
+  <aside class="notes">
+    <p>The cleaner finding for a live talk is the modality principle: words that go with a picture work better spoken than printed. So the split is by job. The screen carries what has to be seen to be followed. The speaker carries the explanation. A sentence that is on the screen and also read aloud is doing neither job.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Legibility</p>
+  <h2 class="claim">Twenty-point type in PowerPoint is 40 pixels on a 1080-pixel canvas.</h2>
+  <p class="status">Computed</p>
+  <div class="evidence">
+    <svg viewBox="0 0 1680 520" role="img" aria-label="20 points divided by a 540 point slide height is 3.7 percent. 3.7 percent of 1080 pixels is 40 pixels.">
+      <text x="0" y="70" font-size="32" class="f-soft">A PowerPoint slide is 7.5 inches tall, which is 540 points</text>
+      <text x="0" y="200" font-size="96" class="num">20 pt ÷ 540 pt</text>
+      <text x="960" y="200" font-size="96" class="num">= 3.7%</text>
+      <text x="0" y="300" font-size="32" class="f-soft">of the slide's height, whatever the slide is drawn on</text>
+      <text x="0" y="440" font-size="96" class="num">3.7% × 1080 px</text>
+      <text x="960" y="440" font-size="96" font-weight="700" class="num f-accent">= 40 px</text>
+      <text x="960" y="500" font-size="32" class="f-accent">the floor for body text</text>
+    </svg>
+  </div>
+  <p class="source">Source for the 20-point floor: Kosslyn, Clear and to the Point, 2007</p>
+  <aside class="notes">
+    <p>Point sizes only mean something relative to the slide's height. Kosslyn's floor is 20 points on a standard slide. That is 3.7 percent of the height, so on this canvas it is 40 pixels. Two thirds of the decks in his sample had text smaller than that.</p>
+    <p>This is a derived rule, not a tested threshold. The better test is to shrink the slide on your monitor to the size the screen looks from the back row and try to read it.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="section" data-tone="accent">
+  <p class="eyebrow">Part two</p>
+  <h2 class="title">What does not hold up</h2>
+  <p class="subtitle">Rules that are repeated more than they were ever tested</p>
+</section>
+
+<section class="slide" data-layout="claim">
+  <p class="eyebrow">Folklore</p>
+  <h2 class="claim">Three of the most repeated slide rules have no evidence behind them.</h2>
+  <div class="evidence">
+    <table class="data">
+      <thead><tr><th>The rule</th><th>What tracing it found</th></tr></thead>
+      <tbody>
+        <tr><td>Attention drops after ten minutes</td><td>One 1978 paper that barely measured attention</td></tr>
+        <tr><td>We remember 10% of what we read</td><td>Percentages added later to a chart that had none</td></tr>
+        <tr><td>Six bullets of six words; 10/20/30</td><td>Practitioner habits, never validated</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="source">Sources: Bradbury, Advances in Physiology Education, 2016; Subramony and others, Educational Technology, 2014</p>
+  <aside class="notes">
+    <p>Stop here and give the room a moment with the table.</p>
+    <p>The attention-span figure: Bradbury followed the citations back and found a single paper, and note-taking in lectures stays fairly steady until near the end. The retention percentages were attached to Edgar Dale's Cone of Experience, which contained no numbers at all. The counting rules are habits someone found useful. None of them is a finding.</p>
+  </aside>
+</section>
+
+<section class="slide" data-layout="closing" data-tone="dark">
+  <p class="eyebrow">Takeaway</p>
+  <h2 class="title">State a claim, show its evidence, and measure the rest.</h2>
+  <p class="subtitle">The full evidence, with tiers and references: docs/evidence.md</p>
+  <aside class="notes">
+    <p>Three things to take away. Make each headline a sentence that could be wrong. Put the evidence for it underneath, labelled where it is. And do not trust your eye for size and contrast: measure them.</p>
+    <p>The document carries what a deck should not: the effect sizes, the caveats and the references.</p>
+  </aside>
+</section>
+</div>
+</main>
+<!-- bs:d3 -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<!-- /bs:d3 -->
+<script id="bs-engine-js">
+/* brutalist-slides engine 0.1.0
+   One controller for every deck: scaling, navigation, steps, speaker notes, overview,
+   print, a ghost-deck view (?ghost) and a rendered audit (?audit).
+   A deck file holds only <section class="slide"> elements. This script builds the chrome.
+
+   Builds (optional, for D3 or any drawn exhibit):
+     Deck.build("name", steps, function render(el, k, anim, ctx) { ... });
+   render draws the COMPLETE state for step k from scratch (k = 0 is the base state,
+   k = steps is the final state, which thumbnails, print and the audit show).
+   Animate only what step k adds: if (Deck.isNew(anim, k, n)) { ...transition... }.
+   ctx.c holds the slide's colours (ground, surface, ink, soft, hair, accent, deco, tint),
+   ctx.f its faces (head, body, label, mono), ctx.data the five series colours (the first is
+   the one the claim is about), ctx.seq a five-step lightness ramp for ordered quantities,
+   ctx.width and ctx.height the exhibit's box in stage pixels.
+   Never hard-code a brand colour in a build: a restyled deck must redraw in the new style. */
+(function () {
+  "use strict";
+
+  var W = 1920, H = 1080;
+  var stage = document.getElementById("stage");
+  var deck = document.getElementById("deck");
+  if (!stage || !deck) return;
+  var slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+  var total = slides.length;
+  var BUILDS = {};
+  var current = -1, step = 0, scale = 1, lastFocus = null;
+  var reduceMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var params = new URLSearchParams(location.search);
+  var ui = {};
+
+  /* ------------------------------------------------------------------ helpers */
+  function el(tag, attrs, html) {
+    var n = document.createElement(tag);
+    for (var k in attrs || {}) n.setAttribute(k, attrs[k]);
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function tokens(node) {
+    var s = node.closest ? (node.closest(".slide") || node) : node, cs = getComputedStyle(s);
+    function v(n) { return cs.getPropertyValue(n).trim(); }
+    return {
+      c: { ground: v("--ground"), surface: v("--surface"), ink: v("--ink"), soft: v("--soft"),
+           hair: v("--hair"), accent: v("--accent"), deco: v("--deco"), tint: v("--tint") },
+      f: { head: v("--bs-font-head"), body: v("--bs-font-body"), label: v("--bs-font-label"), mono: v("--bs-font-mono") },
+      data: [1, 2, 3, 4, 5].map(function (i) { return v("--bs-data-" + i); }),
+      seq: [1, 2, 3, 4, 5].map(function (i) { return v("--bs-seq-" + i); })
+    };
+  }
+  function hasD3() { return typeof window.d3 !== "undefined"; }
+
+  var Deck = window.Deck = {
+    version: "0.1.0",
+    build: function (name, steps, render) { BUILDS[name] = { steps: steps, render: render }; },
+    isNew: function (anim, k, n) { return !!anim && k === n; },
+    tokens: tokens,
+    /* D3 helpers that the course decks proved out. All need d3 on the page. */
+    svg: function (node, w, h, title, desc) {
+      node.innerHTML = "";
+      var svg = d3.select(node).append("svg").attr("viewBox", "0 0 " + w + " " + h)
+        .attr("preserveAspectRatio", "xMidYMid meet").attr("role", "img").attr("aria-label", title);
+      svg.append("title").text(title);
+      if (desc) svg.append("desc").text(desc);
+      return svg;
+    },
+    text: function (g, x, y, s, o) {
+      o = o || {};
+      var t = g.append("text").attr("x", x).attr("y", y).attr("font-size", o.size || 32)
+        .attr("font-weight", o.weight || 400).attr("fill", o.fill || "currentColor");
+      if (o.family) t.attr("font-family", o.family);
+      if (o.anchor) t.attr("text-anchor", o.anchor);
+      if (o.ls) t.attr("letter-spacing", o.ls);
+      return t.text(s);
+    },
+    fadeIn: function (sel, delay, dur) {
+      sel.attr("opacity", 0).transition().delay(delay || 0).duration(dur || 400).ease(d3.easeCubicOut).attr("opacity", 1);
+      return sel;
+    },
+    drawIn: function (path, delay, dur) {
+      var L = path.node().getTotalLength();
+      if (!(L > 0)) return path;
+      path.attr("stroke-dasharray", L + " " + L).attr("stroke-dashoffset", L)
+        .transition().delay(delay || 0).duration(dur || 600).ease(d3.easeCubicOut).attr("stroke-dashoffset", 0)
+        .on("end", function () { d3.select(this).attr("stroke-dasharray", null).attr("stroke-dashoffset", null); });
+      return path;
+    },
+    rng: function (seed) {
+      var s = seed >>> 0;
+      return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+    }
+  };
+
+  /* ------------------------------------------------------------------ chrome */
+  function icon(d) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + "</svg>"; }
+  function buildChrome() {
+    stage.setAttribute("aria-roledescription", "slide deck");
+    var c = el("nav", { id: "controls", "aria-label": "Slide controls" });
+    c.innerHTML =
+      '<button type="button" id="btn-prev" aria-label="Previous">' + icon('<path d="M15 5l-7 7 7 7"/>') + "</button>" +
+      '<span id="counter" aria-hidden="true"></span><span id="pips" aria-hidden="true"></span>' +
+      '<button type="button" id="btn-next" aria-label="Next">' + icon('<path d="M9 5l7 7-7 7"/>') + "</button>" +
+      '<span class="sep" aria-hidden="true"></span>' +
+      '<button type="button" id="btn-thumbs" aria-label="All slides (G)">' + icon('<rect x="4" y="5" width="7" height="5"/><rect x="13" y="5" width="7" height="5"/><rect x="4" y="14" width="7" height="5"/><rect x="13" y="14" width="7" height="5"/>') + "</button>" +
+      '<button type="button" id="btn-notes" aria-label="Speaker notes (N)" aria-pressed="false">' + icon('<path d="M5 6h14M5 11h14M5 16h9"/>') + "</button>" +
+      '<button type="button" id="btn-fs" aria-label="Fullscreen (F)">' + icon('<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>') + "</button>";
+    stage.appendChild(c);
+    var t = el("div", { id: "thumbs", role: "dialog", "aria-modal": "true", "aria-label": "All slides" });
+    t.innerHTML = '<div class="bar"><h2>All slides</h2><button type="button" class="close" aria-label="Close">' +
+      icon('<path d="M6 6l12 12M18 6L6 18"/>') + '</button></div><div class="grid"></div>';
+    stage.appendChild(t);
+    stage.appendChild(el("p", { id: "live", "class": "sr-only", "aria-live": "polite" }));
+    var n = el("aside", { id: "notes", "aria-label": "Speaker notes" }, '<h2 id="notes-head">Speaker notes</h2><div id="notes-body"></div>');
+    document.body.appendChild(n);
+    ["counter", "pips", "live", "thumbs", "notes-head", "notes-body", "btn-prev", "btn-next", "btn-thumbs", "btn-notes", "btn-fs"]
+      .forEach(function (id) { ui[id] = document.getElementById(id); });
+    ui.grid = t.querySelector(".grid");
+    ui.close = t.querySelector(".close");
+    slides.forEach(function (s, i) {
+      s.setAttribute("aria-roledescription", "slide");
+      if (!s.getAttribute("aria-label")) s.setAttribute("aria-label", "Slide " + (i + 1) + ": " + titleOf(s));
+    });
+  }
+
+  function fit() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    scale = Math.min(w / W, h / H);
+    deck.style.transform = "translate(" + (w - W * scale) / 2 + "px," + (h - H * scale) / 2 + "px) scale(" + scale + ")";
+  }
+
+  /* ------------------------------------------------------------------ steps and builds */
+  function headOf(s) { return s.querySelector(".claim, .title, .statement, .quote"); }
+  function titleOf(s) { var h = headOf(s); return s.getAttribute("data-title") || (h ? h.textContent.trim() : ""); }
+  function buildEls(s) { return Array.prototype.slice.call(s.querySelectorAll("[data-build]")); }
+  function stepsOf(s) {
+    var n = 0;
+    s.querySelectorAll("[data-step]").forEach(function (e) { n = Math.max(n, parseInt(e.getAttribute("data-step"), 10) || 0); });
+    buildEls(s).forEach(function (e) { var b = BUILDS[e.getAttribute("data-build")]; if (b) n = Math.max(n, b.steps); });
+    return n;
+  }
+  function stopBuilds(s) { if (hasD3() && s) buildEls(s).forEach(function (e) { d3.select(e).selectAll("*").interrupt(); }); }
+  function renderBuild(node, k, animate) {
+    var b = BUILDS[node.getAttribute("data-build")];
+    if (!b) { node.innerHTML = '<p class="label">No build is registered under "' + node.getAttribute("data-build") + '".</p>'; return; }
+    if (hasD3()) d3.select(node).selectAll("*").interrupt();
+    var t = tokens(node), r = node.getBoundingClientRect();
+    try {
+      b.render(node, Math.max(0, Math.min(b.steps, k)), !!animate && !reduceMQ.matches,
+        { c: t.c, f: t.f, data: t.data, seq: t.seq, width: r.width / scale, height: r.height / scale });
+    } catch (err) {
+      node.innerHTML = '<p class="label">This exhibit could not be drawn: ' + String(err && err.message || err) + "</p>";
+      if (window.console) console.error(err);
+    }
+  }
+  function applyStep(s, k, animate) {
+    s.querySelectorAll("[data-step]").forEach(function (e) {
+      var on = (parseInt(e.getAttribute("data-step"), 10) || 0) <= k, was = e.classList.contains("is-on");
+      e.classList.toggle("is-on", on);
+      e.classList.toggle("is-new", on && !was && !!animate);
+    });
+    buildEls(s).forEach(function (e) { renderBuild(e, k, animate); });
+  }
+
+  /* ------------------------------------------------------------------ navigation */
+  function go(i, atEnd, animate) {
+    i = Math.max(0, Math.min(total - 1, i));
+    var prev = slides[current];
+    if (prev && i !== current) { stopBuilds(prev); prev.classList.remove("is-active"); }
+    current = i;
+    var s = slides[i];
+    step = atEnd ? stepsOf(s) : 0;
+    s.classList.add("is-active");
+    applyStep(s, step, animate);
+    updateUI(true);
+  }
+  function setStep(k, animate) { step = k; applyStep(slides[current], step, animate); updateUI(false); }
+  function next() {
+    if (step < stepsOf(slides[current])) setStep(step + 1, true);
+    else if (current < total - 1) go(current + 1, false, true);
+  }
+  function prev() {
+    if (step > 0) setStep(step - 1, false);
+    else if (current > 0) go(current - 1, true, false);
+  }
+  function updateUI(newSlide) {
+    var s = slides[current], n = stepsOf(s);
+    ui.counter.textContent = (current + 1) + " / " + total;
+    ui.pips.innerHTML = "";
+    for (var j = 1; j <= n; j++) ui.pips.appendChild(el("span", { "class": "pip" + (j <= step ? " on" : "") }));
+    ui["btn-prev"].disabled = current === 0 && step === 0;
+    ui["btn-next"].disabled = current === total - 1 && step === n;
+    ui.live.textContent = newSlide
+      ? "Slide " + (current + 1) + " of " + total + ": " + titleOf(s) + (n ? ", step " + step + " of " + n : "")
+      : "Step " + step + " of " + n;
+    if (newSlide) {
+      var notes = s.querySelector(".notes");
+      ui["notes-head"].textContent = "Speaker notes, slide " + (current + 1);
+      ui["notes-body"].innerHTML = notes ? notes.innerHTML : "<p>No notes for this slide.</p>";
+    }
+    try { history.replaceState(null, "", "#" + (current + 1) + (step ? "." + step : "")); } catch (e) {}
+  }
+  function fromHash() {
+    var m = /^#(\d+)(?:\.(\d+))?$/.exec(location.hash);
+    if (!m) return false;
+    go(parseInt(m[1], 10) - 1, false, false);
+    if (m[2]) setStep(Math.min(stepsOf(slides[current]), parseInt(m[2], 10)), false);
+    return true;
+  }
+
+  /* ------------------------------------------------------------------ overview, notes, fullscreen */
+  function openThumbs() {
+    lastFocus = document.activeElement;
+    ui.grid.innerHTML = "";
+    slides.forEach(function (s, i) {
+      var b = el("button", { type: "button", "class": "thumb" + (i === current ? " current" : ""), "aria-label": "Slide " + (i + 1) + ": " + titleOf(s) });
+      var inner = el("div", { "class": "thumb-inner" });
+      var clone = s.cloneNode(true);
+      clone.classList.remove("is-active");
+      clone.removeAttribute("aria-label");
+      inner.appendChild(clone);
+      b.appendChild(inner);
+      b.appendChild(el("span", { "class": "thumb-num" }, String(i + 1)));
+      b.addEventListener("click", function () { closeThumbs(); go(i, false, true); });
+      ui.grid.appendChild(b);
+      inner.style.transform = "scale(" + b.clientWidth / W + ")";
+      var k = stepsOf(s);
+      buildEls(clone).forEach(function (e) { renderBuild(e, k, false); });
+    });
+    ui.thumbs.classList.add("open");
+    var cur = ui.grid.querySelector(".current");
+    if (cur) cur.focus();
+  }
+  function closeThumbs() { ui.thumbs.classList.remove("open"); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+  function toggleNotes() {
+    var on = document.body.classList.toggle("notes-open");
+    ui["btn-notes"].setAttribute("aria-pressed", on ? "true" : "false");
+    fit();
+  }
+  function toggleFs() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+  }
+
+  function wire() {
+    if ("ResizeObserver" in window) new ResizeObserver(fit).observe(stage);
+    window.addEventListener("resize", fit);
+    ui["btn-prev"].addEventListener("click", prev);
+    ui["btn-next"].addEventListener("click", next);
+    ui["btn-thumbs"].addEventListener("click", openThumbs);
+    ui["btn-notes"].addEventListener("click", toggleNotes);
+    ui["btn-fs"].addEventListener("click", toggleFs);
+    ui.close.addEventListener("click", closeThumbs);
+    deck.addEventListener("click", function (e) {
+      if (e.target.closest("a, button, input, textarea, select, [data-noadvance]")) return;
+      if (String(window.getSelection && window.getSelection()) !== "") return;
+      next();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.getElementById("bs-panel")) { if (e.key === "Escape") closePanel(); return; }
+      if (ui.thumbs.classList.contains("open")) { if (e.key === "Escape" || e.key === "g" || e.key === "G") { e.preventDefault(); closeThumbs(); } return; }
+      var k = e.key;
+      if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Enter") { e.preventDefault(); next(); }
+      else if (k === "ArrowLeft" || k === "PageUp" || k === "Backspace") { e.preventDefault(); prev(); }
+      else if (k === "Home") { e.preventDefault(); go(0, false, true); }
+      else if (k === "End") { e.preventDefault(); go(total - 1, false, true); }
+      else if (k === "g" || k === "G") openThumbs();
+      else if (k === "n" || k === "N") toggleNotes();
+      else if (k === "f" || k === "F") toggleFs();
+    });
+    var x0 = null;
+    stage.addEventListener("touchstart", function (e) { x0 = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (x0 == null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) { if (dx < 0) next(); else prev(); }
+    }, { passive: true });
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("beforeprint", function () {
+      slides.forEach(function (s) { var k = stepsOf(s); buildEls(s).forEach(function (e) { renderBuild(e, k, false); }); });
+    });
+    window.addEventListener("afterprint", function () { applyStep(slides[current], step, false); });
+  }
+
+  /* ------------------------------------------------------------------ ghost deck */
+  /* The headlines alone, in order. Read them as the argument. */
+  function ghost() {
+    return slides.map(function (s, i) {
+      var layout = s.getAttribute("data-layout") || "", h = headOf(s), text = h ? h.textContent.replace(/\s+/g, " ").trim() : "";
+      var flags = [];
+      if ((layout === "claim" || layout === "evidence")) {
+        if (!s.querySelector(".claim")) flags.push("no headline");
+        else {
+          if (text.split(/\s+/).length < 5) flags.push("topic label, not a claim?");
+          if (!/[.?!]$/.test(text)) flags.push("not a full sentence?");
+        }
+      }
+      return { n: i + 1, layout: layout, headline: text, flags: flags };
+    });
+  }
+
+  /* ------------------------------------------------------------------ audit */
+  function parseColor(str) {
+    if (!str) return null;
+    var m = /^rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:\s*[,/]\s*([\d.]+%?))?\s*\)$/.exec(str);
+    if (m) return { r: +m[1], g: +m[2], b: +m[3], a: m[4] == null ? 1 : (/%$/.test(m[4]) ? parseFloat(m[4]) / 100 : +m[4]) };
+    m = /^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)$/.exec(str);
+    if (m) return { r: m[1] * 255, g: m[2] * 255, b: m[3] * 255, a: m[4] == null ? 1 : +m[4] };
+    return null;
+  }
+  function lum(c) {
+    function f(v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+  }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function over(fg, bg, alpha) {
+    return { r: fg.r * alpha + bg.r * (1 - alpha), g: fg.g * alpha + bg.g * (1 - alpha), b: fg.b * alpha + bg.b * (1 - alpha), a: 1 };
+  }
+  function hex(c) { return "#" + [c.r, c.g, c.b].map(function (v) { return ("0" + Math.round(v).toString(16)).slice(-2); }).join("").toUpperCase(); }
+  function isSvg(n) { return typeof SVGElement !== "undefined" && n instanceof SVGElement; }
+  function effPx(node) {
+    var fs = parseFloat(getComputedStyle(node).fontSize) || 0;
+    if (isSvg(node) && node.getScreenCTM) {
+      var m = node.getScreenCTM();
+      if (m) return fs * Math.sqrt(Math.abs(m.a * m.d - m.b * m.c)) / scale;
+    }
+    return fs;
+  }
+  function opacityTo(node, stop) {
+    var a = 1;
+    for (var n = node; n && n !== stop.parentNode; n = n.parentElement) a *= parseFloat(getComputedStyle(n).opacity || 1);
+    return a;
+  }
+  function bgBehind(node, slide) {
+    var r = node.getBoundingClientRect();
+    var stack = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    for (var i = 0; i < stack.length; i++) {
+      var e = stack[i];
+      if (e === node || node.contains(e) || !slide.contains(e)) continue;
+      var cs = getComputedStyle(e);
+      if (isSvg(e) && e.tagName.toLowerCase() !== "svg") {
+        if (/^(rect|circle|ellipse|path|polygon)$/i.test(e.tagName)) {
+          var f = parseColor(cs.fill);
+          if (f && f.a * parseFloat(cs.fillOpacity || 1) * parseFloat(cs.opacity || 1) >= 0.6) return f;
+        }
+        continue;
+      }
+      if (cs.backgroundImage && cs.backgroundImage !== "none" && e !== slide && !e.classList.contains("logo")) return null;
+      var b = parseColor(cs.backgroundColor);
+      if (b && b.a >= 0.6) return b;
+    }
+    return parseColor(getComputedStyle(slide).backgroundColor);
+  }
+  function textEls(slide) {
+    var out = [], seen = new Set(), w = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT), n;
+    while ((n = w.nextNode())) {
+      if (!n.nodeValue.trim()) continue;
+      var e = n.parentElement;
+      if (!e || seen.has(e) || e.closest(".notes, title, desc, script, style")) continue;
+      seen.add(e);
+      var cs = getComputedStyle(e), r = e.getBoundingClientRect();
+      if (cs.display === "none" || cs.visibility === "hidden" || !r.width || !r.height) continue;
+      out.push(e);
+    }
+    return out;
+  }
+  function ownText(e) { return e.textContent.replace(/\s+/g, " ").trim(); }
+  function clip(s, n) { n = n || 60; return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+  function norm(s) { return s.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim(); }
+
+  function auditSlide(s, i, add) {
+    var layout = s.getAttribute("data-layout") || "";
+    var cs0 = getComputedStyle(document.documentElement);
+    var floorBody = parseFloat(cs0.getPropertyValue("--bs-floor-body")) || 40;
+    var floorLabel = parseFloat(cs0.getPropertyValue("--bs-floor-label")) || 32;
+    var minC = parseFloat(cs0.getPropertyValue("--bs-min-contrast")) || 4.5;
+    var sr = s.getBoundingClientRect(), tol = 1.5 * scale;
+    var content = layout === "claim" || layout === "evidence";
+    var notesEl = s.querySelector(".notes"), notes = notesEl ? norm(notesEl.textContent) : "";
+    var accent = parseColor(tokens(s).c.accent ? (function () { var p = el("span"); p.style.color = tokens(s).c.accent; s.appendChild(p); var c = getComputedStyle(p).color; s.removeChild(p); return c; })() : "");
+    var words = 0, accentChars = 0, chars = 0, boxes = [];
+
+    /* Part 2: headline is a claim */
+    var claim = s.querySelector(".claim");
+    if (content && !claim) add("FAIL", "headline", "Content slide has no .claim headline. State the slide's point as a full sentence.");
+    if (claim) {
+      var ccs = getComputedStyle(claim), lh = parseFloat(ccs.lineHeight) || parseFloat(ccs.fontSize) * 1.2;
+      var lines = Math.round(claim.offsetHeight / lh), ct = ownText(claim);
+      if (lines > 2) add("FAIL", "headline", "Headline runs " + lines + " lines; the limit is two. \"" + clip(ct) + "\"");
+      if (ct.split(/\s+/).length < 5) add("WARN", "headline", "Headline is under five words: a topic label, not a claim? \"" + ct + "\"");
+      else if (!/[.?!]$/.test(ct)) add("WARN", "headline", "Headline does not end as a sentence. \"" + clip(ct) + "\"");
+    }
+
+    /* Parts 7, 8: every piece of visible text */
+    textEls(s).forEach(function (e) {
+      var t = ownText(e), cs = getComputedStyle(e), r = e.getBoundingClientRect();
+      var svg = isSvg(e), px = effPx(e);
+      /* the tight boxes of the text itself, line by line: a block's own box can sit inside the
+         slide while its text runs out of it */
+      try {
+        var rg = document.createRange(); rg.selectNodeContents(e);
+        var lines = Array.prototype.filter.call(rg.getClientRects(), function (q) { return q.width > 0 && q.height > 0; }).slice(0, 12);
+        if (lines.length) {
+          boxes.push({ e: e, t: t, rects: lines });
+          r = { left: Math.min.apply(null, lines.map(function (q) { return q.left; })), right: Math.max.apply(null, lines.map(function (q) { return q.right; })),
+                top: Math.min.apply(null, lines.map(function (q) { return q.top; })), bottom: Math.max.apply(null, lines.map(function (q) { return q.bottom; })) };
+        }
+      } catch (err) {}
+      var body = !svg && e.closest("p, li, td, blockquote") && !e.closest(".label, .source, .status, .eyebrow, figcaption, th, pre");
+      var floor = body ? floorBody : floorLabel;
+      if (!e.closest(".source, .status, .eyebrow")) words += t.split(/\s+/).length;
+      chars += t.length;
+      if (px + 0.25 < floor) add("FAIL", "type-size", "\"" + clip(t, 44) + "\" is " + (Math.round(px * 10) / 10) + " px; the floor for " + (body ? "body text" : "labels") + " is " + floor + " px.");
+      if (r.left < sr.left - tol || r.right > sr.right + tol || r.top < sr.top - tol || r.bottom > sr.bottom + tol)
+        add("FAIL", "overflow", "\"" + clip(t, 44) + "\" runs off the slide.");
+      else {
+        for (var p = e.parentElement; p && p !== s; p = p.parentElement) {
+          if (isSvg(p)) continue;
+          var o = getComputedStyle(p).overflow;
+          if (o === "visible") continue;
+          var pr = p.getBoundingClientRect();
+          if (r.bottom > pr.bottom + tol || r.right > pr.right + tol || r.top < pr.top - tol || r.left < pr.left - tol) { add("FAIL", "overflow", "\"" + clip(t, 44) + "\" is cut off by its container."); break; }
+        }
+      }
+      var fg = parseColor(svg ? cs.fill : cs.color), bg = bgBehind(e, s);
+      if (fg && bg) {
+        var a = fg.a * opacityTo(e, s), seen = a < 0.999 ? over(fg, bg, a) : fg, cr = ratio(seen, bg);
+        if (cr + 0.005 < minC) add("FAIL", "contrast", "\"" + clip(t, 44) + "\" is " + hex(seen) + " on " + hex(bg) + ": " + cr.toFixed(2) + ":1; the floor is " + minC + ":1.");
+        if (accent && Math.abs(fg.r - accent.r) + Math.abs(fg.g - accent.g) + Math.abs(fg.b - accent.b) < 6) accentChars += t.length;
+      } else if (fg && !bg) add("WARN", "contrast", "\"" + clip(t, 44) + "\" sits on an image or gradient; contrast was not measured.");
+      var letters = t.replace(/[^A-Za-z]/g, "");
+      if (t.length > 40 && (cs.textTransform === "uppercase" || (letters.length > 30 && letters === letters.toUpperCase())))
+        add("FAIL", "all-caps", "All-caps running text: \"" + clip(t, 44) + "\"");
+      if (t.length > 90 && cs.fontStyle === "italic") add("WARN", "all-italic", "A long run of italic text: \"" + clip(t, 44) + "\"");
+      /* Part 4: on screen and in the speaker's mouth */
+      var nt = norm(t);
+      if (notes && nt.split(" ").length >= 8 && notes.indexOf(nt) !== -1)
+        add("WARN", "redundancy", "This sentence is on the slide and word for word in the notes. Say it or show it, not both: \"" + clip(t, 50) + "\"");
+    });
+
+    /* text drawn on top of other text */
+    for (var a1 = 0; a1 < boxes.length; a1++) for (var b1 = a1 + 1; b1 < boxes.length; b1++) {
+      var A = boxes[a1], B = boxes[b1], hit = false;
+      if (A.e.contains(B.e) || B.e.contains(A.e)) continue;
+      A.rects.forEach(function (ra) { B.rects.forEach(function (rb) {
+        var w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left), h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+        if (w > 6 * scale && h > 0.3 * Math.min(ra.height, rb.height)) hit = true;
+      }); });
+      if (hit) add("FAIL", "overlap", "\"" + clip(A.t, 30) + "\" and \"" + clip(B.t, 30) + "\" are drawn on top of each other.");
+    }
+    if (s.scrollHeight > H + 2) add("FAIL", "overflow", "Content is " + (s.scrollHeight - H) + " px taller than the slide.");
+    s.querySelectorAll("ul, ol").forEach(function (list) {
+      if (list.closest(".notes")) return;
+      var items = Array.prototype.filter.call(list.children, function (c) { return c.tagName === "LI"; });
+      if (items.length > 4) add("WARN", "working-memory", "A list of " + items.length + " items. Past four, group them or split the slide.");
+      if (items.length && items.length <= 4 && items.every(function (li) { return li.hasAttribute("data-step"); }))
+        add("WARN", "steps", "A short list is revealed one item at a time. Show short lists whole; build diagrams and processes.");
+      items.forEach(function (li) {
+        var lcs = getComputedStyle(li), llh = parseFloat(lcs.lineHeight) || parseFloat(lcs.fontSize) * 1.3;
+        if (Math.round(li.offsetHeight / llh) > 2) add("WARN", "working-memory", "A list item runs past two lines: \"" + clip(ownText(li), 44) + "\"");
+      });
+    });
+    if (layout !== "evidence" && words > 60) add("WARN", "density", words + " words on screen. Is this slide a document? Move detail to the handout or the notes.");
+    if (content && chars && accentChars / chars > 0.4) add("WARN", "salience", "Over 40% of the text is in the accent colour. The accent means look here; it cannot mean that everywhere.");
+    if (content && s.querySelector(".logo")) add("WARN", "coherence", "A logo on a content slide. Keep logos to the title and closing slides.");
+    if (s.querySelector(".legend")) add("WARN", "labeling", "A legend. Label the lines, bars or regions directly and delete it.");
+    if (layout !== "section" && !notes) add("WARN", "notes", "No speaker notes. The explanation belongs in the notes, in your voice.");
+    if (layout === "evidence" && notes && !/pause|stop|walk/.test(notes)) add("WARN", "notes", "A dense evidence slide: the notes should say to stop talking and walk the room through it.");
+    s.querySelectorAll("img").forEach(function (im) { if (!im.getAttribute("alt") && !im.hasAttribute("alt")) add("WARN", "alt-text", "An image has no alt attribute."); });
+    s.querySelectorAll("svg").forEach(function (v) { if (!v.closest(".logo") && !v.getAttribute("aria-label") && !v.querySelector("title") && v.getAttribute("aria-hidden") !== "true") add("WARN", "alt-text", "An SVG exhibit has no title or aria-label."); });
+  }
+
+  function audit() {
+    var keep = { i: current, k: step }, findings = [];
+    slides.forEach(function (s, i) {
+      go(i, true, false);
+      auditSlide(s, i, function (level, rule, msg) { findings.push({ slide: i + 1, layout: s.getAttribute("data-layout") || "", level: level, rule: rule, msg: msg }); });
+    });
+    function deckAdd(level, rule, msg) { findings.push({ slide: 0, layout: "deck", level: level, rule: rule, msg: msg }); }
+    if (total && slides[0].getAttribute("data-layout") !== "title") deckAdd("WARN", "structure", "The first slide is not a title slide.");
+    if (total && slides[total - 1].getAttribute("data-layout") !== "closing") deckAdd("WARN", "structure", "The deck has no closing slide. End the talk on purpose.");
+    var seenHead = {};
+    ghost().forEach(function (g) {
+      if (!g.headline || (g.layout !== "claim" && g.layout !== "evidence")) return;
+      var k = norm(g.headline);
+      if (seenHead[k]) deckAdd("WARN", "structure", "Slides " + seenHead[k] + " and " + g.n + " have the same headline.");
+      else seenHead[k] = g.n;
+    });
+    go(keep.i < 0 ? 0 : keep.i, false, false);
+    if (keep.k) setStep(keep.k, false);
+    var fails = findings.filter(function (f) { return f.level === "FAIL"; }).length;
+    var res = {
+      engine: Deck.version, title: document.title, style: document.documentElement.getAttribute("data-style") || "",
+      slides: total, fail: fails, warn: findings.length - fails, findings: findings, ghost: ghost(),
+      note: "Not measured here: whether the evidence supports each claim, whether meaning rests on hue alone, whether terms stay the same across slides, and whether each animation teaches something a still frame would not. Those need a reader."
+    };
+    window.bsAudit = res;
+    return res;
+  }
+
+  function auditText(res) {
+    var out = ["brutalist-slides audit", res.title + "  ·  style: " + (res.style || "none") + "  ·  " + res.slides + " slides",
+      "FAIL " + res.fail + "   WARN " + res.warn, ""];
+    res.findings.forEach(function (f) {
+      out.push((f.slide ? ("slide " + f.slide + " ").slice(0, 9) : "deck     ") + " " + f.level + "  " + (f.rule + "               ").slice(0, 15) + " " + f.msg);
+    });
+    if (!res.findings.length) out.push("Nothing measurable is wrong.");
+    out.push("", res.note);
+    return out.join("\n");
+  }
+  function ghostText() {
+    return ghost().map(function (g) {
+      return (("  " + g.n).slice(-3)) + "  " + ((g.layout || "-") + "          ").slice(0, 10) + (g.headline || "(no headline)") + (g.flags.length ? "   <-- " + g.flags.join("; ") : "");
+    }).join("\n");
+  }
+  function showPanel(title, text) {
+    closePanel();
+    var p = el("div", { id: "bs-panel", role: "dialog", "aria-label": title });
+    p.appendChild(el("h2", {}, title + "  (Esc to close)"));
+    p.appendChild(document.createTextNode(text));
+    stage.appendChild(p);
+  }
+  function closePanel() { var p = document.getElementById("bs-panel"); if (p) p.parentNode.removeChild(p); }
+
+  Deck.go = function (n, k) { go(n - 1, false, false); if (k) setStep(Math.min(stepsOf(slides[current]), k), false); };
+  Deck.next = next; Deck.prev = prev; Deck.ghost = ghost; Deck.audit = audit;
+  Deck.auditText = function () { return auditText(audit()); };
+  Deck.count = function () { return total; };
+  /* every slide drawn in its final state, for print and PDF */
+  Deck.printReady = function () {
+    slides.forEach(function (s) { var k = stepsOf(s); s.querySelectorAll("[data-step]").forEach(function (e) { e.classList.add("is-on"); e.classList.remove("is-new"); }); buildEls(s).forEach(function (e) { renderBuild(e, k, false); }); });
+  };
+  Deck.steps = function (n) { return stepsOf(slides[n - 1]); };
+
+  /* ------------------------------------------------------------------ start */
+  function start() {
+    buildChrome();
+    wire();
+    fit();
+    if (!fromHash()) go(0, false, true);
+    var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    Deck.ready = fontsReady.then(function () {
+      fit();
+      applyStep(slides[current], step, false);
+      if (params.has("ghost")) showPanel("Ghost deck: the headlines alone", ghostText());
+      if (params.has("audit")) { var res = audit(); showPanel("Audit", auditText(res)); }
+      document.documentElement.setAttribute("data-bs-ready", "1");
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+</script>
+<script id="bs-deck-js">
+/* Builds for the sample deck. Every number is from docs/evidence.md.
+   Each render draws the complete picture for step k and animates only what k adds. */
+
+/* Slide 2: one effect size and its interval against zero. */
+Deck.build("neutral", 1, function (el, k, anim, ctx) {
+  var W = 1680, H = 520, c = ctx.c;
+  var svg = Deck.svg(el, W, H, "Pooled effect of slides on learning: g = 0.067, 95% interval from -0.10 to 0.24",
+    "An effect-size axis from -0.4 to 0.8. Zero means no difference. The pooled estimate from 48 studies is 0.067 and its 95 percent interval, -0.10 to 0.24, includes zero.");
+  var x = d3.scaleLinear().domain([-0.4, 0.8]).range([80, W - 80]), y = 300;
+  svg.append("line").attr("x1", x(-0.4)).attr("x2", x(0.8)).attr("y1", y).attr("y2", y).attr("stroke", c.ink).attr("stroke-width", 2);
+  [-0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8].forEach(function (t) {
+    svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", y).attr("y2", y + 14).attr("stroke", c.ink).attr("stroke-width", 2);
+    Deck.text(svg, x(t), y + 60, t === 0 ? "0" : t.toFixed(1), { size: 32, anchor: "middle", family: ctx.f.mono, fill: c.soft });
+  });
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 110).attr("y2", y).attr("stroke", c.soft).attr("stroke-width", 2).attr("stroke-dasharray", "4 8");
+  Deck.text(svg, x(0) - 24, 136, "no difference", { size: 32, anchor: "end", fill: c.soft });
+  Deck.text(svg, x(0.8), y + 120, "slides better →", { size: 32, anchor: "end", fill: c.soft });
+  Deck.text(svg, x(-0.4), y + 120, "← slides worse", { size: 32, fill: c.soft });
+  Deck.text(svg, x(-0.4), y + 172, "effect size (Hedges' g)", { size: 32, fill: c.soft });
+  if (k < 1) return;
+  var g = svg.append("g");
+  var ci = g.append("line").attr("x1", x(-0.10)).attr("x2", x(0.24)).attr("y1", y - 60).attr("y2", y - 60).attr("stroke", c.deco).attr("stroke-width", 10);
+  var dot = g.append("circle").attr("cx", x(0.067)).attr("cy", y - 60).attr("r", 20).attr("fill", c.deco).attr("stroke", c.ground).attr("stroke-width", 4);
+  var l1 = Deck.text(g, x(0.24) + 36, y - 76, "g = 0.067", { size: 56, weight: 700, family: ctx.f.mono, fill: c.accent });
+  var l2 = Deck.text(g, x(0.24) + 36, y - 24, "95% interval −0.10 to 0.24: it includes zero", { size: 32, fill: c.accent });
+  if (Deck.isNew(anim, k, 1)) {
+    ci.attr("x1", x(0.067)).attr("x2", x(0.067)).transition().duration(700).ease(d3.easeCubicOut).attr("x1", x(-0.10)).attr("x2", x(0.24));
+    Deck.fadeIn(dot, 0, 300); Deck.fadeIn(l1, 600, 400); Deck.fadeIn(l2, 800, 400);
+  }
+});
+
+/* Slide 3: how common each flaw was. Bars from zero, labelled where they are. */
+Deck.build("flaws", 2, function (el, k, anim, ctx) {
+  var W = 1680, H = 520, c = ctx.c;
+  var rows = [["More than four bullets in a list", 91], ["Bullets longer than two lines", 91],
+              ["All-caps, all-italic or all-bold text", 81], ["Changes in look that mean nothing", 72], ["Text under 20 points", 66]];
+  var svg = Deck.svg(el, W, H, "Share of 140 decks with each flaw",
+    rows.map(function (r) { return r[0] + ": " + r[1] + " percent"; }).join(". ") + ".");
+  var x0 = 760, x = d3.scaleLinear().domain([0, 100]).range([0, 700]);
+  rows.forEach(function (r, i) {
+    var y = 8 + i * 84, g = svg.append("g");
+    Deck.text(g, x0 - 28, y + 44, r[0], { size: 36, anchor: "end", fill: c.ink });
+    g.append("rect").attr("x", x0).attr("y", y).attr("width", x(100)).attr("height", 60).attr("fill", c.surface);
+    if (k < 1) return;
+    var bar = g.append("rect").attr("x", x0).attr("y", y).attr("height", 60).attr("width", x(r[1])).attr("fill", c.ink);
+    var num = Deck.text(g, x0 + x(r[1]) + 18, y + 44, r[1] + "%", { size: 36, family: ctx.f.mono, fill: c.ink });
+    if (Deck.isNew(anim, k, 1)) {
+      bar.attr("width", 0).transition().delay(i * 160).duration(600).ease(d3.easeCubicOut).attr("width", x(r[1]));
+      Deck.fadeIn(num, 600 + i * 160, 300);
+    }
+  });
+  if (k >= 2) {
+    var note = Deck.text(svg, x0, 480, "One flawed slide flags the whole deck, so these shares run high.", { size: 32, fill: c.accent });
+    if (Deck.isNew(anim, k, 2)) Deck.fadeIn(note, 100, 400);
+  }
+});
+
+/* Slide 6: 22 tests, all the same way. */
+Deck.build("contiguity", 1, function (el, k, anim, ctx) {
+  var W = 1680, H = 520, c = ctx.c, s = 76, gap = 20;
+  var svg = Deck.svg(el, W, H, "22 of 22 tests favoured words placed beside their graphics; median effect size 1.10",
+    "A grid of 22 squares, one per controlled test. All 22 favoured placing words next to the graphics they describe. The median effect size was d = 1.10.");
+  for (var i = 0; i < 22; i++) {
+    var col = i % 11, row = Math.floor(i / 11), X = col * (s + gap), Y = 60 + row * (s + gap);
+    svg.append("rect").attr("x", X + 1).attr("y", Y + 1).attr("width", s - 2).attr("height", s - 2).attr("fill", c.surface).attr("stroke", c.hair).attr("stroke-width", 2);
+    if (k >= 1) {
+      var f = svg.append("rect").attr("x", X).attr("y", Y).attr("width", s).attr("height", s).attr("fill", c.ink);
+      if (Deck.isNew(anim, k, 1)) Deck.fadeIn(f, i * 45, 200);
+    }
+  }
+  Deck.text(svg, 0, 32, "one square is one controlled test", { size: 32, fill: c.soft });
+  if (k < 1) return;
+  var a = Deck.text(svg, 0, 340, "22 of 22", { size: 96, weight: 700, family: ctx.f.mono, fill: c.accent });
+  var b = Deck.text(svg, 0, 400, "favoured words placed beside the graphic", { size: 36, fill: c.ink });
+  var d = Deck.text(svg, 0, 480, "median effect size d = 1.10", { size: 36, family: ctx.f.mono, fill: c.ink });
+  if (Deck.isNew(anim, k, 1)) { Deck.fadeIn(a, 22 * 45 + 100, 400); Deck.fadeIn(b, 22 * 45 + 300, 400); Deck.fadeIn(d, 22 * 45 + 500, 400); }
+});
+
+/* Slide 7: the same principle in two tallies. */
+Deck.build("redundancy", 2, function (el, k, anim, ctx) {
+  var W = 1680, H = 520, c = ctx.c;
+  var rows = [["2017 review", 0.87, "median d = 0.87"], ["2021 tally", 0.10, "median d = 0.10, with 8 of 12 tests positive"]];
+  var svg = Deck.svg(el, W, H, "Redundancy principle: median effect 0.87 in the 2017 review and 0.10 in the 2021 tally",
+    "Two bars from zero on the same effect-size scale. The 2017 review reported a median d of 0.87. The 2021 tally reported a median d of about 0.10, with 8 of 12 tests positive.");
+  var x0 = 330, x = d3.scaleLinear().domain([0, 1]).range([0, 1000]);
+  svg.append("line").attr("x1", x0).attr("x2", x0).attr("y1", 40).attr("y2", 400).attr("stroke", c.ink).attr("stroke-width", 2);
+  Deck.text(svg, x0, 456, "0", { size: 32, anchor: "middle", family: ctx.f.mono, fill: c.soft });
+  Deck.text(svg, x0 + 40, 456, "median effect size (d) of removing redundant on-screen text", { size: 32, fill: c.soft });
+  rows.forEach(function (r, i) {
+    var n = i + 1, y = 70 + i * 170, hot = i === 1, g = svg.append("g");
+    Deck.text(g, x0 - 28, y + 58, r[0], { size: 40, anchor: "end", weight: hot ? 700 : 400, fill: c.ink });
+    if (k < n) return;
+    var bar = g.append("rect").attr("x", x0).attr("y", y).attr("height", 92).attr("width", x(r[1])).attr("fill", hot ? c.deco : c.ink);
+    var lab = Deck.text(g, x0 + x(r[1]) + 24, y + 58, r[2], { size: 36, weight: hot ? 700 : 400, fill: hot ? c.accent : c.ink });
+    if (Deck.isNew(anim, k, n)) {
+      bar.attr("width", 0).transition().duration(650).ease(d3.easeCubicOut).attr("width", x(r[1]));
+      Deck.fadeIn(lab, 600, 400);
+    }
+  });
+});
+</script>
+</body>
+</html>
