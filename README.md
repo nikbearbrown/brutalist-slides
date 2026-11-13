@@ -81,6 +81,10 @@ Not measured, and left to a reader: whether the evidence supports the claim, whe
 
 HTML is the source. `./bs pdf talk.html` writes one page per slide. Converters to Google Slides and PowerPoint are planned as separate tools; the format in [docs/deck-format.md](docs/deck-format.md) is written so they can read it.
 
+## Licence
+
+MIT: see [LICENSE](LICENSE). That covers the skills, the documents, the engine, the styles and the scripts. Three things here belong to others and keep their own licences: the fonts in `fonts/` (SIL Open Font License, each licence file is beside its fonts), D3 in `vendor/` (ISC), and any logos you add to a style's `logos/` folder, which are trademarks of their owners and are not covered at all.
+
 ## Credits
 
 The evidence base draws on Mayer's multimedia-learning research, Kosslyn's cognitive communication principles, and Alley and Garner's assertion-evidence work; full references are in [docs/evidence.md](docs/evidence.md). Ideas borrowed from other open-licensed agent skills are credited one by one in [docs/prior-art.md](docs/prior-art.md). Fonts: Lato, EB Garamond and JetBrains Mono, each under the SIL Open Font License (see `fonts/`). D3 is under the ISC licence (see `vendor/`).
